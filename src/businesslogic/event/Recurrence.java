@@ -1,5 +1,13 @@
 package businesslogic.event;
 
+import persistence.BatchUpdateHandler;
+import persistence.PersistenceManager;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -13,7 +21,7 @@ public class Recurrence {
     private Event mainEvent;
 
     private ArrayList<Event> recurrentEvents;
-
+/*
     public Recurrence(int frequence, int numInstances, Date endDate, Event mainEvent){
         this.frequence = frequence;
         this.numInstances = numInstances;
@@ -23,6 +31,31 @@ public class Recurrence {
         this.recurrentEvents = new ArrayList<>();
 
         populateRecEventsList(mainEvent);
+    }
+*/
+
+    public Recurrence(int frequence, int numInstances, String endDate, Event mainEvent){
+        this.frequence = frequence;
+        this.numInstances = numInstances;
+        this.startDate = mainEvent.getStartDate();
+        this.endDate = convertStringToDate(endDate);
+        this.mainEvent = mainEvent;
+
+        this.recurrentEvents = new ArrayList<>();
+
+        populateRecEventsList(mainEvent);
+    }
+
+    private static Date convertStringToDate(String dateString){
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+
+        try{
+            Date result = sdf.parse(dateString);
+            return result;
+        } catch (ParseException e){
+            e.printStackTrace();
+            return null;
+        }
     }
 
     //TODO: crea metodo per trovare numIstances da endDate
@@ -68,6 +101,10 @@ public class Recurrence {
         return id;
     }
 
+    public Event getMainEvent(){
+        return mainEvent;
+    }
+
     public String toString(){
         String result = "---> RECURRENCE: \n";
         result += "frequence: " + frequence + "\n";
@@ -80,5 +117,34 @@ public class Recurrence {
         }
 
         return result;
+    }
+
+    // STATIC METHODS FOR PERSISTENCE
+    public static void saveNewRecurrence(Recurrence rec) {
+        String recurrenceInsert = "INSERT INTO Catering.RecurrenceCatering (num_instances, frequence, start_date, end_date, main_event_id) VALUES (?, ?, ?, ?, ?);";
+        int[] result = PersistenceManager.executeBatchUpdate(recurrenceInsert, 1, new BatchUpdateHandler() {
+            @Override
+            public void handleBatchItem(PreparedStatement ps, int batchCount) throws SQLException {
+                ps.setInt(1, rec.numInstances);
+                ps.setInt(2, rec.frequence);
+                ps.setDate(3, new java.sql.Date(rec.startDate.getTime()));
+                ps.setDate(4, new java.sql.Date(rec.endDate.getTime()));
+                ps.setInt(5, rec.mainEvent.getId());
+            }
+
+            @Override
+            public void handleGeneratedIds(ResultSet rs, int count) throws SQLException {
+                if(count == 0){
+                    rec.id = rs.getInt(1);
+                }
+            }
+        });
+
+        if(result[0] > 0){
+            //salva gli eventi figli che appartengono alla ricorrenza
+            if(rec.getRecurrentEvents().size() > 0){
+                Event.saveAllNewRecurrentEvents(rec, rec.recurrentEvents);
+            }
+        }
     }
 }

@@ -96,6 +96,10 @@ public class Event {
         return result;
     }
 
+    public int getId() {
+        return id;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -165,7 +169,7 @@ public class Event {
 
     // STATIC METHODS FOR PERSISTENCE
     public static void saveNewEvent(Event ev){
-        String eventInsert = "INSERT INTO Catering.EventsCatering (title, start_date, end_date, location, num_participants, recurrence, client) VALUES (?, ?, ?, ?, ?, ?, ?);";
+        String eventInsert = "INSERT INTO Catering.EventsCatering (title, start_date, end_date, location, num_participants, recurrence_id, client) VALUES (?, ?, ?, ?, ?, ?, ?);";
         int[] result = PersistenceManager.executeBatchUpdate(eventInsert, 1, new BatchUpdateHandler() {
             @Override
             public void handleBatchItem(PreparedStatement ps, int batchCount) throws SQLException {
@@ -190,18 +194,6 @@ public class Event {
         if (result[0] > 0) { // menu effettivamente inserito
             // salva le note
              notesToDB(ev);
-  /*
-            // salva i servizi
-            if (ev.services.size() > 0) {
-                Service.saveAllNewServices(m.id, m.sections);
-            }
-
-            // salva le voci libere
-            if (m.freeItems.size() > 0) {
-                MenuItem.saveAllNewItems(m.id, 0, m.freeItems);
-            }
-            loadedMenus.put(m.id, m);
-            */
         }
     }
 
@@ -221,8 +213,24 @@ public class Event {
         });
     }
 
+    public static void saveAllNewRecurrentEvents(Recurrence rec, ArrayList<Event> recurrentEvents) {
+        String recEventsInsert = "INSERT INTO catering.EventsCatering (title, start_date, end_date, location, num_participants, recurrence_id, client) VALUES (?, ?, ?, ?, ?, ?, ?);";
+        PersistenceManager.executeBatchUpdate(recEventsInsert, recurrentEvents.size(), new BatchUpdateHandler() {
+            @Override
+            public void handleBatchItem(PreparedStatement ps, int batchCount) throws SQLException {
+                ps.setString(1, PersistenceManager.escapeString(rec.getMainEvent().getTitle()));
+                ps.setDate(2, new java.sql.Date(recurrentEvents.get(batchCount).startDate.getTime()));
+                ps.setDate(3, new java.sql.Date(recurrentEvents.get(batchCount).endDate.getTime()));
+                ps.setString(4, PersistenceManager.escapeString(rec.getMainEvent().getLocation()));
+                ps.setInt(5, rec.getMainEvent().getNumParticipants());
+                ps.setInt(6, rec.getMainEvent().getId());
+                ps.setString(7, PersistenceManager.escapeString(rec.getMainEvent().getClient()));
+            }
 
-    public int getId() {
-        return id;
+            @Override
+            public void handleGeneratedIds(ResultSet rs, int count) throws SQLException {
+                recurrentEvents.get(count).id = rs.getInt(1);
+            }
+        });
     }
 }

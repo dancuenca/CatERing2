@@ -58,6 +58,20 @@ public class EventManager {
         return service;
 
     }
+
+    public Recurrence defineRecurrence(int frequence, int numIstances, String endDate, Event mainEvent) throws UseCaseLogicException {
+        User user = CatERing.getInstance().getUserManager().getCurrentUser();
+
+        if(!user.isOrganizer()){
+            throw new UseCaseLogicException();
+        }
+
+        Recurrence rec = new Recurrence(frequence, numIstances, endDate, mainEvent);
+
+        this.notifyRecurrenceAdded(rec);
+
+        return rec;
+    }
 /*
     public Event cancelEvent(Event event, boolean spread) throws UseCaseLogicException{
         User user = CatERing.getInstance().getUserManager().getCurrentUser();
@@ -80,22 +94,6 @@ public class EventManager {
 
         return event;
     }
-
-    public Recurrence defineRecurrence(int frequence, int numIstances, Date endDate, Event mainEvent) throws UseCaseLogicException {
-        User user = CatERing.getInstance().getUserManager().getCurrentUser();
-
-        if(!user.isOrganizer()){
-            throw new UseCaseLogicException();
-        }
-
-        Recurrence rec = new Recurrence(frequence, numIstances, endDate, mainEvent);
-
-        this.notifyRecurrenceAdded(rec);
-
-        return rec;
-    }
-
-
 
     public Service insertService(Event ev, Date date, String serviceType, int numShifts, String startTime, String endTime, boolean spread) throws UseCaseLogicException{
         User user = CatERing.getInstance().getUserManager().getCurrentUser();
@@ -167,6 +165,12 @@ public class EventManager {
             er.updateEventCreated(ev);
         }
     }
+
+    private void notifyRecurrenceAdded(Recurrence rec) {
+        for(EventEventReceiver er: this.eventReceivers){
+            er.updateRecurrenceCreated(rec);
+        }
+    }
 /*
     private void notifyEventCancelled(Event ev){
         for(EventEventReceiver er: this.eventReceivers){
@@ -174,11 +178,7 @@ public class EventManager {
         }
     }
 
-    private void notifyRecurrenceAdded(Recurrence rec) {
-        for(EventEventReceiver er: this.eventReceivers){
-            er.updateRecurrenceCreated(rec);
-        }
-    }
+
 
     private void notifyServiceAdded(Service serv){
         for(EventEventReceiver er: this.eventReceivers){
