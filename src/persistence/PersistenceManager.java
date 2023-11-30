@@ -1,13 +1,11 @@
 package persistence;
 
-import com.sun.javafx.binding.StringFormatter;
-
 import java.sql.*;
 
 public class PersistenceManager {
-    private static String url = "jdbc:mysql://localhost:8889/catering?serverTimezone=UTC";
+    private static String url = "jdbc:mysql://localhost:3306/catering?serverTimezone=UTC";
     private static String username = "root";
-    private static String password = "root";
+    private static String password = "";
 
     private static int lastId;
 

@@ -1,16 +1,15 @@
 import businesslogic.CatERing;
 import businesslogic.UseCaseLogicException;
+import businesslogic.event.Assignment;
 import businesslogic.event.Event;
 import businesslogic.event.Recurrence;
 import businesslogic.event.Service;
 import businesslogic.menu.Menu;
 import businesslogic.shift.Shift;
+import businesslogic.shift.StaffMember;
 import persistence.PersistenceManager;
 
-import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.jar.JarOutputStream;
 
 public class TestEvent {
     public static void main(String[] args) {
@@ -44,6 +43,11 @@ public class TestEvent {
             ArrayList<Shift> shifts = CatERing.getInstance().getShiftManager().createAllShifts(serv, serv.getStartTime(), serv.getEndTime(), 3);
 
             System.out.println(serv.getShifts());
+            System.out.println("\nTEST ASSEGNAMENTO COMPITO A MEMBRO PERSONALE");
+            ArrayList<StaffMember> availableStaffMembers = CatERing.getInstance().getEventManager().getStaffMembers();
+            Assignment assignment = CatERing.getInstance().getEventManager().defineAssignment(serv, availableStaffMembers.get(0), shifts.get(2), "sala principale");
+
+            System.out.println(assignment);
 
         } catch (UseCaseLogicException ex) {
             System.out.println("Errore di logica nello use case");

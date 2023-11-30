@@ -72,6 +72,22 @@ public class EventManager {
 
         return rec;
     }
+
+    public ArrayList<StaffMember> getStaffMembers() {
+        return StaffMember.loadAvailableStaffMembers();
+    }
+
+    public Assignment defineAssignment(Service service, StaffMember staffMember, Shift shift, String task) throws UseCaseLogicException{
+        if(currentEvent == null && !this.currentEvent.getServices().contains(service) && !service.getShifts().contains(shift)) {
+            throw new UseCaseLogicException();
+        }
+        Assignment assignment = new Assignment(staffMember, shift, task);
+        this.notifyAssignmentAdded(assignment);
+
+        return assignment;
+    }
+
+
 /*
     public Event cancelEvent(Event event, boolean spread) throws UseCaseLogicException{
         User user = CatERing.getInstance().getUserManager().getCurrentUser();
@@ -93,35 +109,6 @@ public class EventManager {
         this.notifyEventCancelled(event);
 
         return event;
-    }
-
-    public Service insertService(Event ev, Date date, String serviceType, int numShifts, String startTime, String endTime, boolean spread) throws UseCaseLogicException{
-        User user = CatERing.getInstance().getUserManager().getCurrentUser();
-
-        if(!user.isOrganizer()){
-            throw new UseCaseLogicException();
-        }
-
-        if(spread == false) {
-            Service serv = new Service(ev, date, serviceType, numShifts, startTime, endTime);
-
-            this.notifyServiceAdded(serv);
-
-            return serv;
-        }
-        else{
-            Service serv = new Service(ev, date, serviceType, numShifts, startTime, endTime);
-
-            ArrayList<Event> recEv = ev.getRecurrence().getRecurrentEvents();
-
-            for(Event event: recEv){
-                event.getServices().add(serv);
-                //TODO: non so come avvertire che anche agli altri eventi che appartengono alla ricorrenza è stato aggiunto un servizio
-                //this.notifyServiceAdded(serv)
-            }
-
-            return serv;
-        }
     }
 
     public void selectStaff(Shift shift, int id, String task) throws UseCaseLogicException{
@@ -160,6 +147,12 @@ public class EventManager {
 
 
 */
+
+
+    public void setCurrentEvent(Event ev){
+        this.currentEvent = ev;
+    }
+
     private void notifyEventAdded(Event ev){
         for(EventEventReceiver er: this.eventReceivers){
             er.updateEventCreated(ev);
@@ -186,14 +179,6 @@ public class EventManager {
         }
     }
 */
-    public void setCurrentEvent(Event ev){
-        this.currentEvent = ev;
-    }
-
-    public ObservableList<EventInfo> getEventInfo() {
-        return EventInfo.loadAllEventInfo();
-    }
-
     public void addEventEventReceiver(EventPersistence eventPersistence) {
         this.eventReceivers.add(eventPersistence);
     }
@@ -203,6 +188,18 @@ public class EventManager {
             er.updateServiceAdded(ev, serv);
         }
     }
+
+    private void notifyAssignmentAdded(Assignment assignment) {
+        for (EventEventReceiver er: this.eventReceivers) {
+            er.updateAssignmentAdded(assignment);
+        }
+    }
+
+
+    public ObservableList<EventInfo> getEventInfo() {
+        return EventInfo.loadAllEventInfo();
+    }
+
 }
 
 

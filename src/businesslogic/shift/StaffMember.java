@@ -1,14 +1,24 @@
 package businesslogic.shift;
 
+import persistence.PersistenceManager;
+import persistence.ResultHandler;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
 public class StaffMember {
     private int id;
     private String name;
-    private boolean available;
+    private int available;
+
+    public StaffMember() {
+    }
 
     public StaffMember(int id, String name){
         this.id = id;
         this.name = name;
-        this.available = true;
+        this.available = 1;
     }
 
     public int getId(){
@@ -19,11 +29,11 @@ public class StaffMember {
         return name;
     }
 
-    public boolean isAvailable() {
+    public int isAvailable() {
         return available;
     }
 
-    public void setAvailable(boolean available) {
+    public void setAvailable(int available) {
         this.available = available;
     }
 
@@ -31,7 +41,32 @@ public class StaffMember {
         String result = "---> STAFF MEMBER: \n";
         result += "id: " + id + "\n";
         result += "name: " + name + "\n";
+        result += "available: " + available + "\n";
 
         return result;
+    }
+
+    // STATIC METHODS FOR PERSISTENCE
+    public static ArrayList<StaffMember> loadAvailableStaffMembers() {
+        ArrayList<StaffMember> staff = new ArrayList<StaffMember>();
+        String query = "SELECT * FROM StaffMemberCatering WHERE availability = 1";
+        PersistenceManager.executeQuery(query, new ResultHandler() {
+            @Override
+            public void handle(ResultSet rs) throws SQLException {
+                StaffMember staffMember = new StaffMember();
+                staffMember.id = rs.getInt("id");
+                staffMember.name = rs.getString("name");
+                staffMember.available = rs.getInt("availability");
+                staff.add(staffMember);
+            }
+        });
+
+        return staff;
+    }
+
+    public static void changeAvailability(StaffMember staffMember) {
+        staffMember.available = 0;
+        String upd = "UPDATE StaffMemberCatering SET availability = " + staffMember.available + "  WHERE id = " + staffMember.id;
+        PersistenceManager.executeUpdate(upd);
     }
 }

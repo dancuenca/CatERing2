@@ -1,11 +1,6 @@
 package persistence;
 
-import businesslogic.event.Event;
-import businesslogic.event.EventEventReceiver;
-import businesslogic.event.Recurrence;
-import businesslogic.event.Service;
-import businesslogic.menu.Menu;
-import businesslogic.shift.Shift;
+import businesslogic.event.*;
 
 public class EventPersistence implements EventEventReceiver {
     @Override
@@ -22,5 +17,8 @@ public class EventPersistence implements EventEventReceiver {
     public void updateRecurrenceCreated(Recurrence rec){
         Recurrence.saveNewRecurrence(rec);
     }
+
+    @Override
+    public void updateAssignmentAdded(Assignment assignment) {Assignment.saveNewAssignment(assignment); }
 
 }
