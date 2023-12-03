@@ -54,6 +54,24 @@ public class Event {
         services = new ArrayList<>();
     }
 
+    public Event(User user, String title, String location, Date startDate, Date endDate, int numParticipants, String client, String[] notes){
+        if(notes != null){
+            this.notes = notes;
+        }
+
+        this.organizer = user;
+        this.title = title;
+        this.location = location;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.numParticipants = numParticipants;
+        this.state = "waiting for menu";
+        this.recurrence = null;
+        this.client = client;
+
+        services = new ArrayList<>();
+    }
+
     private static Date convertStringToDate(String dateString){
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 
@@ -250,7 +268,7 @@ public class Event {
             public void handle(ResultSet rs) throws SQLException {
                 //TODO: selezionare solo gli eventi che appartengono a current user
                 User user = CatERing.getInstance().getUserManager().getCurrentUser();
-                Event ev = new Event(user,
+                /*Event ev = new Event(user,
                         rs.getString("title"),
                         formatDatetoString(rs.getDate("start_date")),
                         formatDatetoString(rs.getDate("end_date")),
@@ -258,7 +276,7 @@ public class Event {
                         rs.getInt("num_participants"),
                         rs.getInt("recurrence_id"),
                         rs.getString("client")
-                );
+                );*/
             }
         });
 
