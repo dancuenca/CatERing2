@@ -74,6 +74,24 @@ public class Event {
         services = new ArrayList<>();
     }
 
+    public Event(User user, String title, String location, Date startDate, Date endDate, int numParticipants, String client){
+        this.organizer = user;
+        this.title = title;
+        this.location = location;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.numParticipants = numParticipants;
+        this.state = "waiting for menu";
+        this.recurrence = null;
+        this.client = client;
+
+        services = new ArrayList<>();
+    }
+
+    public Event(){
+
+    }
+
     private static Date convertStringToDate(String dateString){
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 
@@ -94,12 +112,13 @@ public class Event {
         result += "location: " + location + "\n";
         result += "number of participants: " + numParticipants + "\n";
         result += "state: " + state + "\n";
-
+        result += "id: " + id + "\n";
+/*
         result += "\nnote: \n";
         for(int i= 0; i < notes.length; i++){
             result += (i+1) + ") " + notes[i] + "\n";
         }
-
+*/
         return result;
     }
 
@@ -176,7 +195,7 @@ public class Event {
 
     // STATIC METHODS FOR PERSISTENCE
     public static void saveNewEvent(Event ev){
-        String eventInsert = "INSERT INTO Catering.EventsCatering (title, start_date, end_date, location, num_participants, recurrence_id, client) VALUES (?, ?, ?, ?, ?, ?, ?);";
+        String eventInsert = "INSERT INTO Catering.EventsCatering (title, start_date, end_date, location, num_participants, recurrence_id, client, organizer_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
         int[] result = PersistenceManager.executeBatchUpdate(eventInsert, 1, new BatchUpdateHandler() {
             @Override
             public void handleBatchItem(PreparedStatement ps, int batchCount) throws SQLException {
@@ -187,6 +206,7 @@ public class Event {
                 ps.setInt(5, ev.numParticipants);
                 ps.setInt(6, ev.getIdRecurrence());
                 ps.setString(7, PersistenceManager.escapeString(ev.client));
+                ps.setInt(8, ev.organizer.getId());
             }
 
             @Override
@@ -268,23 +288,30 @@ public class Event {
         });
     }
 
-    public static ObservableList<Event> loadAllEventInfo(){
-        ObservableList<Event> all = FXCollections.observableArrayList();
-        String query = "SELECT * FROM catering.eventscatering WHERE true";
+    public static ArrayList<Event> loadAllEventInfo(User organizer){
+        ArrayList<Event> all = new ArrayList<>();
+        String query = "SELECT * FROM catering.eventscatering WHERE organizer_id = " + organizer.getId();
         PersistenceManager.executeQuery(query, new ResultHandler() {
             @Override
             public void handle(ResultSet rs) throws SQLException {
-                //TODO: selezionare solo gli eventi che appartengono a current user
-                User user = CatERing.getInstance().getUserManager().getCurrentUser();
-                /*Event ev = new Event(user,
+                /*Event ev = new Event(organizer,
                         rs.getString("title"),
-                        formatDatetoString(rs.getDate("start_date")),
-                        formatDatetoString(rs.getDate("end_date")),
                         rs.getString("location"),
+                        rs.getDate("start_date"),
+                        rs.getDate("end_date"),
                         rs.getInt("num_participants"),
-                        rs.getInt("recurrence_id"),
-                        rs.getString("client")
+                        v
                 );*/
+                Event ev = new Event();
+                ev.organizer = organizer;
+                ev.title = rs.getString("title");
+                ev.startDate = rs.getDate("start_date");
+                ev.endDate = rs.getDate("end_date");
+                ev.location = rs.getString("location");
+                ev.numParticipants = rs.getInt("num_participants");
+                ev.client = rs.getString("client");
+                ev.id = rs.getInt("id");
+                all.add(ev);
             }
         });
 

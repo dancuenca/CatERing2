@@ -216,8 +216,9 @@ public class EventManager {
         return EventInfo.loadAllEventInfo();
     }
 
-    public ObservableList<Event> getEventList() {
-        return Event.loadAllEventInfo();
+    public ArrayList<Event> getEventList() {
+        User u = CatERing.getInstance().getUserManager().getCurrentUser();
+        return Event.loadAllEventInfo(u);
     }
 }
 

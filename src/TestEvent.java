@@ -30,7 +30,8 @@ public class TestEvent {
             System.out.println(rec.getRecurrentEvents());
 
             System.out.println("\nTEST GET EVENT INFO");
-            ObservableList<Event> events = CatERing.getInstance().getEventManager().getEventList();
+            ArrayList<Event> events = CatERing.getInstance().getEventManager().getEventList();
+            System.out.println(events);
 
             System.out.println("\nTEST INSERT SERVICE");
             Menu m = CatERing.getInstance().getMenuManager().createMenu("Menu Mia Dan");
