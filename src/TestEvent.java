@@ -7,6 +7,7 @@ import businesslogic.event.Service;
 import businesslogic.menu.Menu;
 import businesslogic.shift.Shift;
 import businesslogic.shift.StaffMember;
+import javafx.collections.ObservableList;
 import persistence.PersistenceManager;
 
 import java.util.ArrayList;
@@ -24,13 +25,12 @@ public class TestEvent {
             Event ev = CatERing.getInstance().getEventManager().createEvent("Ex titolo", "Ex location", "11-09-2001", "10-11-2023", 69, "Daniele Rossi", new String[]{"nota1", "nota2", "nota3"});
             System.out.println(ev.toString());
 
-            System.out.println("%%%%%%%%%%%%%%%%%%%%%");
-
             System.out.println("\nTEST CREATE RECURRENCE");
             Recurrence rec = CatERing.getInstance().getEventManager().defineRecurrence(3, 3, "11-09-2001", ev);
             System.out.println(rec.getRecurrentEvents());
 
-            System.out.println("%%%%%%%%%%%%%%%%%%%%%");
+            System.out.println("\nTEST GET EVENT INFO");
+            ObservableList<Event> events = CatERing.getInstance().getEventManager().getEventList();
 
             System.out.println("\nTEST INSERT SERVICE");
             Menu m = CatERing.getInstance().getMenuManager().createMenu("Menu Mia Dan");
@@ -45,7 +45,7 @@ public class TestEvent {
             System.out.println(serv.getShifts());
             System.out.println("\nTEST ASSEGNAMENTO COMPITO A MEMBRO PERSONALE");
             ArrayList<StaffMember> availableStaffMembers = CatERing.getInstance().getEventManager().getStaffMembers();
-            Assignment assignment = CatERing.getInstance().getEventManager().defineAssignment(serv, availableStaffMembers.get(0), shifts.get(2), "sala principale");
+            Assignment assignment = CatERing.getInstance().getEventManager().defineAssignment(serv, availableStaffMembers.get(0), shifts.get(2), "servire vini");
 
             System.out.println(assignment);
 

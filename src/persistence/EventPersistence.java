@@ -9,6 +9,11 @@ public class EventPersistence implements EventEventReceiver {
     }
 
     @Override
+    public void updateEventDeleted(Event ev){
+        Event.deleteEvent(ev);
+    }
+
+    @Override
     public void updateServiceAdded(Event ev, Service serv) {
         Service.saveNewService(ev, serv);
     }

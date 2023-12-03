@@ -87,6 +87,16 @@ public class EventManager {
         return assignment;
     }
 
+    public Event deleteEvent(Event ev) throws UseCaseLogicException{
+        User u = CatERing.getInstance().getUserManager().getCurrentUser();
+        if (!u.isOrganizer() || ev.getState().equals("ongoing")){
+            throw new UseCaseLogicException();
+        }
+
+        this.notifyEventDeleted(ev);
+
+        return ev;
+    }
 
 /*
     public Event cancelEvent(Event event, boolean spread) throws UseCaseLogicException{
@@ -148,7 +158,6 @@ public class EventManager {
 
 */
 
-
     public void setCurrentEvent(Event ev){
         this.currentEvent = ev;
     }
@@ -156,6 +165,12 @@ public class EventManager {
     private void notifyEventAdded(Event ev){
         for(EventEventReceiver er: this.eventReceivers){
             er.updateEventCreated(ev);
+        }
+    }
+
+    private void notifyEventDeleted(Event ev){
+        for(EventEventReceiver er: this.eventReceivers){
+            er.updateEventDeleted(ev);
         }
     }
 
@@ -200,6 +215,9 @@ public class EventManager {
         return EventInfo.loadAllEventInfo();
     }
 
+    public ObservableList<Event> getEventList() {
+        return Event.loadAllEventInfo();
+    }
 }
 
 

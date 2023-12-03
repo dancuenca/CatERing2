@@ -1,11 +1,15 @@
 package businesslogic.event;
 
+import businesslogic.CatERing;
 import businesslogic.menu.Menu;
 import businesslogic.menu.MenuItem;
 import businesslogic.menu.Section;
 import businesslogic.user.User;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import persistence.BatchUpdateHandler;
 import persistence.PersistenceManager;
+import persistence.ResultHandler;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -44,23 +48,6 @@ public class Event {
         this.endDate = convertStringToDate(endDate);
         this.numParticipants = numParticipants;
         this.state = "waiting for menu";
-        this.recurrence = null;
-        this.client = client;
-
-        services = new ArrayList<>();
-    }
-
-    public Event(User user, String title, String location, Date startDate, Date endDate, int numParticipants, String client, String[] notes){
-        if(notes != null){
-            this.notes = notes;
-        }
-
-        this.organizer = user;
-        this.title = title;
-        this.location = location;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.numParticipants = numParticipants;
         this.recurrence = null;
         this.client = client;
 
@@ -197,6 +184,27 @@ public class Event {
         }
     }
 
+    public static void deleteEvent(Event ev){
+        //del services
+        String delServ = "DELETE FROM catering.servicescatering WHERE event_id = " + ev.id;
+        PersistenceManager.executeUpdate(delServ);
+
+        //del shifts
+        for(Service serv: ev.services){
+            String delShift = "DELETE FROM catering.shiftscatering WHERE service_id = " + serv.getId();
+            PersistenceManager.executeUpdate(delShift);
+        }
+
+        //del notes
+        String delNote = "DELETE FROM catering.notescatering WHERE event_id = " + ev.id;
+        PersistenceManager.executeUpdate(delNote);
+
+        //TODO: eliminare staff member e assignments
+
+        String delEv = "DELETE FROM catering.eventscatering WHERE id = " + ev.id;
+        PersistenceManager.executeUpdate(delEv);
+    }
+
     private static void notesToDB(Event ev) {
         String featureInsert = "INSERT INTO catering.NotesCatering (event_id, note) VALUES (?, ?)";
         PersistenceManager.executeBatchUpdate(featureInsert, ev.getNotes().length, new BatchUpdateHandler() {
@@ -223,7 +231,7 @@ public class Event {
                 ps.setDate(3, new java.sql.Date(recurrentEvents.get(batchCount).endDate.getTime()));
                 ps.setString(4, PersistenceManager.escapeString(rec.getMainEvent().getLocation()));
                 ps.setInt(5, rec.getMainEvent().getNumParticipants());
-                ps.setInt(6, rec.getMainEvent().getId());
+                ps.setInt(6, rec.getId());
                 ps.setString(7, PersistenceManager.escapeString(rec.getMainEvent().getClient()));
             }
 
@@ -232,5 +240,34 @@ public class Event {
                 recurrentEvents.get(count).id = rs.getInt(1);
             }
         });
+    }
+
+    public static ObservableList<Event> loadAllEventInfo(){
+        ObservableList<Event> all = FXCollections.observableArrayList();
+        String query = "SELECT * FROM catering.eventscatering WHERE true";
+        PersistenceManager.executeQuery(query, new ResultHandler() {
+            @Override
+            public void handle(ResultSet rs) throws SQLException {
+                //TODO: selezionare solo gli eventi che appartengono a current user
+                User user = CatERing.getInstance().getUserManager().getCurrentUser();
+                Event ev = new Event(user,
+                        rs.getString("title"),
+                        formatDatetoString(rs.getDate("start_date")),
+                        formatDatetoString(rs.getDate("end_date")),
+                        rs.getString("location"),
+                        rs.getInt("num_participants"),
+                        rs.getInt("recurrence_id"),
+                        rs.getString("client")
+                );
+            }
+        });
+
+        return all;
+    }
+
+    private static String formatDatetoString(Date data) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        String dataFormattata = sdf.format(data);
+        return dataFormattata;
     }
 }

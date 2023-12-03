@@ -40,6 +40,7 @@ public class TestCatERing1b {
             System.out.println("\nMENU CREATO");
             System.out.println(m.testString());
 
+
             System.out.println("\nTEST DELETE");
             CatERing.getInstance().getMenuManager().deleteMenu(m);
 
