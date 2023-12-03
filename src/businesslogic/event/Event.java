@@ -4,6 +4,8 @@ import businesslogic.CatERing;
 import businesslogic.menu.Menu;
 import businesslogic.menu.MenuItem;
 import businesslogic.menu.Section;
+import businesslogic.shift.Shift;
+import businesslogic.shift.StaffMember;
 import businesslogic.user.User;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -203,21 +205,28 @@ public class Event {
     }
 
     public static void deleteEvent(Event ev){
-        //del services
-        String delServ = "DELETE FROM catering.servicescatering WHERE event_id = " + ev.id;
-        PersistenceManager.executeUpdate(delServ);
+        for(Service serv: ev.getServices()){
+            for(Shift shift: serv.getShifts()){
+                for(StaffMember sm: shift.getAvailableStaffMems()){
+                    String delSm = "DELETE FROM catering.staffmembercatering WHERE shift_id = " + shift.getId();
+                    PersistenceManager.executeUpdate(delSm);
+                }
 
-        //del shifts
-        for(Service serv: ev.services){
+                String delAssignment = "DELETE FROM catering.tasksassignment WHERE shift_id = " + shift.getId();
+                PersistenceManager.executeUpdate(delAssignment);
+            }
+
             String delShift = "DELETE FROM catering.shiftscatering WHERE service_id = " + serv.getId();
             PersistenceManager.executeUpdate(delShift);
         }
 
+        //del services
+        String delServ = "DELETE FROM catering.servicescatering WHERE event_id = " + ev.id;
+        PersistenceManager.executeUpdate(delServ);
+
         //del notes
         String delNote = "DELETE FROM catering.notescatering WHERE event_id = " + ev.id;
         PersistenceManager.executeUpdate(delNote);
-
-        //TODO: eliminare staff member e assignments
 
         String delEv = "DELETE FROM catering.eventscatering WHERE id = " + ev.id;
         PersistenceManager.executeUpdate(delEv);
@@ -234,7 +243,6 @@ public class Event {
 
             @Override
             public void handleGeneratedIds(ResultSet rs, int count) throws SQLException {
-                // non ci sono id autogenerati in MenuFeatures
             }
         });
     }

@@ -11,6 +11,7 @@ public class StaffMember {
     private int id;
     private String name;
     private int available;
+    private int shiftId;
 
     public StaffMember() {
     }
@@ -42,6 +43,7 @@ public class StaffMember {
         result += "id: " + id + "\n";
         result += "name: " + name + "\n";
         result += "available: " + available + "\n";
+        result += "shift id: " + shiftId + "\n";
 
         return result;
     }
@@ -57,6 +59,7 @@ public class StaffMember {
                 staffMember.id = rs.getInt("id");
                 staffMember.name = rs.getString("name");
                 staffMember.available = rs.getInt("availability");
+                staffMember.shiftId = rs.getInt("shift_id");
                 staff.add(staffMember);
             }
         });
@@ -68,5 +71,7 @@ public class StaffMember {
         staffMember.available = 0;
         String upd = "UPDATE StaffMemberCatering SET availability = " + staffMember.available + "  WHERE id = " + staffMember.id;
         PersistenceManager.executeUpdate(upd);
+        String upd2 = "UPDATE StaffMemberCatering SET shift_id = " + staffMember.shiftId + "  WHERE id = " + staffMember.id;
+        PersistenceManager.executeUpdate(upd2);
     }
 }

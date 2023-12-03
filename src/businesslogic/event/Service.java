@@ -131,12 +131,15 @@ public class Service {
             }
         });
 
-        if (result[0] > 0) { // menu effettivamente inserito
+        if (result[0] > 0) { // servizio effettivamente inserito
 
             // salva i turni
+            /*
             if (serv.getShifts().size() > 0) {
                 Shift.saveAllNewShifts(serv, serv.shifts);
             }
+
+             */
 
         }
 

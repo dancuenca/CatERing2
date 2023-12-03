@@ -1,8 +1,14 @@
 import businesslogic.CatERing;
 import businesslogic.UseCaseLogicException;
+import businesslogic.event.Assignment;
 import businesslogic.event.Event;
 import businesslogic.event.Service;
 import businesslogic.menu.Menu;
+import businesslogic.shift.Shift;
+import businesslogic.shift.StaffMember;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 public class TestEvent1b {
     public static void main(String[] args) {
@@ -15,11 +21,11 @@ public class TestEvent1b {
             System.out.println(ev.toString());
 
             Service serv = CatERing.getInstance().getEventManager().insertService(ev, ev.getStartDate(), "Colazione Swag", "05:00", "10:00", false);
-            CatERing.getInstance().getShiftManager().createAllShifts(serv, serv.getStartTime(), serv.getEndTime(), 3);
+            ArrayList<Shift> shifts = CatERing.getInstance().getShiftManager().createAllShifts(serv, serv.getStartTime(), serv.getEndTime(), 3);
+            ArrayList<StaffMember> availableStaffMembers = CatERing.getInstance().getEventManager().getStaffMembers();
+            Assignment assignment = CatERing.getInstance().getEventManager().defineAssignment(serv, availableStaffMembers.get(0), shifts.get(2), "servire vini");
 
-            System.out.println(ev.getServices());
-            System.out.println("--> SHIFTS:");
-            System.out.println(ev.getServices().get(0).getShifts());
+            System.out.println(assignment);
 
             CatERing.getInstance().getEventManager().deleteEvent(ev);
         } catch (UseCaseLogicException ex){

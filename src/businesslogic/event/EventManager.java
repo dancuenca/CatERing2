@@ -82,6 +82,7 @@ public class EventManager {
             throw new UseCaseLogicException();
         }
         Assignment assignment = new Assignment(staffMember, shift, task);
+        shift.getAvailableStaffMems().add(staffMember);
         this.notifyAssignmentAdded(assignment);
 
         return assignment;

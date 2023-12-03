@@ -23,7 +23,7 @@ public class Shift {
         this.serv = serv;
         this.startTime = startTime;
         this.endTime = endTime;
-        //this.availableStaffMems = populateAvailStaffMembersArray();
+        this.availableStaffMems = new ArrayList<>();
     }
 
     public int getId(){
@@ -36,6 +36,10 @@ public class Shift {
 
     public void setEndTime(LocalTime endTime) {
         this.endTime = endTime;
+    }
+
+    public ArrayList<StaffMember> getAvailableStaffMems() {
+        return availableStaffMems;
     }
 
     /*public ArrayList<StaffMember> getAvailableStaffMems() {
@@ -94,15 +98,18 @@ public class Shift {
 
             @Override
             public void handleGeneratedIds(ResultSet rs, int count) throws SQLException{
-                shift.id = PersistenceManager.getLastId();
+                if (count == 0) {
+                    shift.id = rs.getInt(1);
+                }
             }
         });
 
         //PersistenceManager.executeUpdate(shiftInsert);
-        shift.id = PersistenceManager.getLastId();
+        //shift.id = PersistenceManager.getLastId();
+        System.out.println("//////////////////////" + shift.id);
     }
 
-    public static void saveAllNewShifts(Service serv, ArrayList<Shift> shifts){
+    /*public static void saveAllNewShifts(Service serv, ArrayList<Shift> shifts){
         String shiftInsert = "INSERT INTO catering.ShiftsCatering (service_id, start_time, end_time) VALUES (?, ?, ?);";
         PersistenceManager.executeBatchUpdate(shiftInsert, shifts.size(), new BatchUpdateHandler(){
             @Override
@@ -115,8 +122,9 @@ public class Shift {
             @Override
             public void handleGeneratedIds(ResultSet rs, int count) throws SQLException{
                 shifts.get(count).id = rs.getInt(1);
+                System.out.println("^^^^^^^^^^^^^^" + shifts.get(count).id);
             }
         });
     }
-
+    */
 }
