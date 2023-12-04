@@ -46,4 +46,9 @@ public class EventPersistence implements EventEventReceiver {
         Event.saveEventLocation(ev);
     }
 
+    @Override
+    public void updateEventNumParticipantsChanged(Event ev){
+        Event.saveEventNumParticipants(ev);
+    }
+
 }

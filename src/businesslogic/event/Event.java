@@ -353,4 +353,9 @@ public class Event {
         String locationUpdate = "UPDATE catering.eventscatering SET location = '" + ev.location + "' " + "WHERE id = " + ev.id;
         PersistenceManager.executeUpdate(locationUpdate);
     }
+
+    public static void saveEventNumParticipants(Event ev){
+        String numParticipantsUpdate = "UPDATE catering.eventscatering SET num_participants = '" + ev.numParticipants + "' " + "WHERE id = " + ev.id;
+        PersistenceManager.executeUpdate(numParticipantsUpdate);
+    }
 }

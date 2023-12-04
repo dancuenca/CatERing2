@@ -129,15 +129,6 @@ public class EventManager {
         this.notifyEventEndDateChanged();
     }
 
-    public void changeEventLocation(String location) throws UseCaseLogicException{
-        if(currentEvent == null){
-            throw new UseCaseLogicException();
-        }
-
-        currentEvent.setLocation(location);
-        this.notifyEventLocationChanged();
-    }
-
     private static Date convertStringToDate(String dateString){
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 
@@ -148,6 +139,24 @@ public class EventManager {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public void changeEventLocation(String location) throws UseCaseLogicException{
+        if(currentEvent == null){
+            throw new UseCaseLogicException();
+        }
+
+        currentEvent.setLocation(location);
+        this.notifyEventLocationChanged();
+    }
+
+    public void changeEventNumParticipants(int numParticipants) throws UseCaseLogicException{
+        if(currentEvent == null){
+            throw new UseCaseLogicException();
+        }
+
+        currentEvent.setNumParticipants(numParticipants);
+        this.notifyEventNumParticipantsChanged();
     }
 
 /*
@@ -270,6 +279,12 @@ public class EventManager {
         }
     }
 
+    private void notifyEventNumParticipantsChanged(){
+        for(EventEventReceiver er: this.eventReceivers){
+            er.updateEventNumParticipantsChanged(this.currentEvent);
+        }
+    }
+
     public ObservableList<EventInfo> getEventInfo() {
         return EventInfo.loadAllEventInfo();
     }
@@ -278,7 +293,6 @@ public class EventManager {
         User u = CatERing.getInstance().getUserManager().getCurrentUser();
         return Event.loadAllEventInfo(u);
     }
-
 
 }
 
