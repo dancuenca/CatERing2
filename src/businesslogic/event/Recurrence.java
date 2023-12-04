@@ -21,18 +21,6 @@ public class Recurrence {
     private Event mainEvent;
 
     private ArrayList<Event> recurrentEvents;
-/*
-    public Recurrence(int frequence, int numInstances, Date endDate, Event mainEvent){
-        this.frequence = frequence;
-        this.numInstances = numInstances;
-        this.endDate = endDate;
-        this.mainEvent = mainEvent;
-
-        this.recurrentEvents = new ArrayList<>();
-
-        populateRecEventsList(mainEvent);
-    }
-*/
 
     public Recurrence(int frequence, int numInstances, String endDate, Event mainEvent){
         this.frequence = frequence;
@@ -62,7 +50,6 @@ public class Recurrence {
 
     private void populateRecEventsList(Event mainEvent){
         mainEvent.setRecurrence(this);
-        //TODO: vedere come gestire le date
         for(int i = 1; i <= this.numInstances; i++){
 
             Event recEv = new Event(mainEvent.getOrganizer(), mainEvent.getTitle(), mainEvent.getLocation(),

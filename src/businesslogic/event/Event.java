@@ -53,7 +53,8 @@ public class Event {
         this.recurrence = null;
         this.client = client;
 
-        services = new ArrayList<>();
+        this.services = new ArrayList<>();
+
     }
 
     public Event(User user, String title, String location, Date startDate, Date endDate, int numParticipants, String client, String[] notes){
@@ -74,23 +75,7 @@ public class Event {
         services = new ArrayList<>();
     }
 
-    public Event(User user, String title, String location, Date startDate, Date endDate, int numParticipants, String client){
-        this.organizer = user;
-        this.title = title;
-        this.location = location;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.numParticipants = numParticipants;
-        this.state = "waiting for menu";
-        this.recurrence = null;
-        this.client = client;
-
-        services = new ArrayList<>();
-    }
-
-    public Event(){
-
-    }
+    public Event(){}
 
     private static Date convertStringToDate(String dateString){
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
@@ -115,7 +100,7 @@ public class Event {
         result += "id: " + id + "\n";
 /*
         result += "\nnote: \n";
-        for(int i= 0; i < notes.length; i++){
+        for(int i = 0; i < notes.length; i++){
             result += (i+1) + ") " + notes[i] + "\n";
         }
 */
@@ -224,18 +209,35 @@ public class Event {
         }
     }
 
-    public static void deleteEvent(Event ev){
+    public static void deleteEvent(Event ev, boolean spread){
+        if(spread == true && ev.getRecurrence() != null){
+            Recurrence rec = ev.getRecurrence();
+            for(Event recEv: rec.getRecurrentEvents()){
+                deleteSingleEvent(recEv);
+            }
+
+            String delRec = "DELETE FROM catering.recurrencecatering WHERE id = " + ev.getRecurrence().getId();
+            PersistenceManager.executeUpdate(delRec);
+        }
+
+        deleteSingleEvent(ev);
+    }
+
+    private static void deleteSingleEvent(Event ev){
         for(Service serv: ev.getServices()){
             for(Shift shift: serv.getShifts()){
                 for(StaffMember sm: shift.getAvailableStaffMems()){
+                    //del staff members
                     String delSm = "DELETE FROM catering.staffmembercatering WHERE shift_id = " + shift.getId();
                     PersistenceManager.executeUpdate(delSm);
                 }
 
+                //del tasks
                 String delAssignment = "DELETE FROM catering.tasksassignment WHERE shift_id = " + shift.getId();
                 PersistenceManager.executeUpdate(delAssignment);
             }
 
+            //del shifts
             String delShift = "DELETE FROM catering.shiftscatering WHERE service_id = " + serv.getId();
             PersistenceManager.executeUpdate(delShift);
         }
@@ -262,13 +264,12 @@ public class Event {
             }
 
             @Override
-            public void handleGeneratedIds(ResultSet rs, int count) throws SQLException {
-            }
+            public void handleGeneratedIds(ResultSet rs, int count) throws SQLException {}
         });
     }
 
     public static void saveAllNewRecurrentEvents(Recurrence rec, ArrayList<Event> recurrentEvents) {
-        String recEventsInsert = "INSERT INTO catering.EventsCatering (title, start_date, end_date, location, num_participants, recurrence_id, client) VALUES (?, ?, ?, ?, ?, ?, ?);";
+        String recEventsInsert = "INSERT INTO catering.EventsCatering (title, start_date, end_date, location, num_participants, recurrence_id, client, organizer_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
         PersistenceManager.executeBatchUpdate(recEventsInsert, recurrentEvents.size(), new BatchUpdateHandler() {
             @Override
             public void handleBatchItem(PreparedStatement ps, int batchCount) throws SQLException {
@@ -279,6 +280,7 @@ public class Event {
                 ps.setInt(5, rec.getMainEvent().getNumParticipants());
                 ps.setInt(6, rec.getId());
                 ps.setString(7, PersistenceManager.escapeString(rec.getMainEvent().getClient()));
+                ps.setInt(8, rec.getMainEvent().getOrganizer().getId());
             }
 
             @Override
@@ -294,14 +296,6 @@ public class Event {
         PersistenceManager.executeQuery(query, new ResultHandler() {
             @Override
             public void handle(ResultSet rs) throws SQLException {
-                /*Event ev = new Event(organizer,
-                        rs.getString("title"),
-                        rs.getString("location"),
-                        rs.getDate("start_date"),
-                        rs.getDate("end_date"),
-                        rs.getInt("num_participants"),
-                        v
-                );*/
                 Event ev = new Event();
                 ev.organizer = organizer;
                 ev.title = rs.getString("title");
@@ -316,11 +310,5 @@ public class Event {
         });
 
         return all;
-    }
-
-    private static String formatDatetoString(Date data) {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-        String dataFormattata = sdf.format(data);
-        return dataFormattata;
     }
 }

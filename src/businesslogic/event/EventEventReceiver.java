@@ -5,7 +5,7 @@ public interface EventEventReceiver {
     public void updateServiceAdded(Event ev, Service serv);
     public void updateRecurrenceCreated(Recurrence rec);
     public void updateAssignmentAdded(Assignment assignment);
-    public void updateEventDeleted(Event ev);
+    public void updateEventDeleted(Event ev, boolean spread);
 
     /*
     public void updateEventCancelled(Event ev);

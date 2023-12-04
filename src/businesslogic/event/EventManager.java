@@ -88,13 +88,13 @@ public class EventManager {
         return assignment;
     }
 
-    public Event deleteEvent(Event ev) throws UseCaseLogicException{
+    public Event deleteEvent(Event ev, boolean spread) throws UseCaseLogicException{
         User u = CatERing.getInstance().getUserManager().getCurrentUser();
         if (!u.isOrganizer() || ev.getState().equals("ongoing")){
             throw new UseCaseLogicException();
         }
 
-        this.notifyEventDeleted(ev);
+        this.notifyEventDeleted(ev, spread);
 
         return ev;
     }
@@ -169,9 +169,9 @@ public class EventManager {
         }
     }
 
-    private void notifyEventDeleted(Event ev){
+    private void notifyEventDeleted(Event ev, boolean spread){
         for(EventEventReceiver er: this.eventReceivers){
-            er.updateEventDeleted(ev);
+            er.updateEventDeleted(ev, spread);
         }
     }
 
@@ -180,21 +180,7 @@ public class EventManager {
             er.updateRecurrenceCreated(rec);
         }
     }
-/*
-    private void notifyEventCancelled(Event ev){
-        for(EventEventReceiver er: this.eventReceivers){
-            er.updateEventCancelled(ev);
-        }
-    }
 
-
-
-    private void notifyServiceAdded(Service serv){
-        for(EventEventReceiver er: this.eventReceivers){
-            er.updateServiceCreated(serv);
-        }
-    }
-*/
     public void addEventEventReceiver(EventPersistence eventPersistence) {
         this.eventReceivers.add(eventPersistence);
     }

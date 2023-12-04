@@ -9,8 +9,8 @@ public class EventPersistence implements EventEventReceiver {
     }
 
     @Override
-    public void updateEventDeleted(Event ev){
-        Event.deleteEvent(ev);
+    public void updateEventDeleted(Event ev, boolean spread){
+        Event.deleteEvent(ev, spread);
     }
 
     @Override
