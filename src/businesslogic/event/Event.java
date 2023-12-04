@@ -1,14 +1,8 @@
 package businesslogic.event;
 
-import businesslogic.CatERing;
-import businesslogic.menu.Menu;
-import businesslogic.menu.MenuItem;
-import businesslogic.menu.Section;
 import businesslogic.shift.Shift;
 import businesslogic.shift.StaffMember;
 import businesslogic.user.User;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import persistence.BatchUpdateHandler;
 import persistence.PersistenceManager;
 import persistence.ResultHandler;
@@ -160,6 +154,30 @@ public class Event {
         this.recurrence = recurrence;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public void setNumParticipants(int numParticipants) {
+        this.numParticipants = numParticipants;
+    }
+
+    public void setNotes(String[] notes) {
+        this.notes = notes;
+    }
+
     public ArrayList<Service> getServices() {
         return services;
     }
@@ -288,6 +306,9 @@ public class Event {
                 recurrentEvents.get(count).id = rs.getInt(1);
             }
         });
+
+        String updateMainEvent = "UPDATE catering.eventscatering SET recurrence_id = ' " + rec.getId() + "' " + "WHERE id = " + rec.getMainEvent().getId();
+        PersistenceManager.executeUpdate(updateMainEvent);
     }
 
     public static ArrayList<Event> loadAllEventInfo(User organizer){
@@ -310,5 +331,11 @@ public class Event {
         });
 
         return all;
+    }
+
+
+    public static void saveEventTitle(Event ev) {
+        String titleUpdate = "UPDATE catering.eventscatering SET title = '" + PersistenceManager.escapeString(ev.getTitle()) + "' " + "WHERE id = " + ev.getId();
+        PersistenceManager.executeUpdate(titleUpdate);
     }
 }

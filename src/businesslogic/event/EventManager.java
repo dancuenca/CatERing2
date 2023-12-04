@@ -67,6 +67,7 @@ public class EventManager {
         }
 
         Recurrence rec = new Recurrence(frequence, numIstances, endDate, mainEvent);
+        mainEvent.setRecurrence(rec);
 
         this.notifyRecurrenceAdded(rec);
 
@@ -97,6 +98,15 @@ public class EventManager {
         this.notifyEventDeleted(ev, spread);
 
         return ev;
+    }
+
+    public void changeEventTitle(String title) throws UseCaseLogicException{
+        if(currentEvent == null){
+            throw new UseCaseLogicException();
+        }
+
+        currentEvent.setTitle(title);
+        this.notifyEventTitleChanged();
     }
 
 /*
@@ -155,8 +165,6 @@ public class EventManager {
             serv.getBelongingEvent().setState("ongoing");
         }
     }
-
-
 */
 
     public void setCurrentEvent(Event ev){
@@ -197,6 +205,12 @@ public class EventManager {
         }
     }
 
+    private void notifyEventTitleChanged(){
+        for(EventEventReceiver er: this.eventReceivers){
+            er.updateEventTitleChanged(this.currentEvent);
+        }
+    }
+
 
     public ObservableList<EventInfo> getEventInfo() {
         return EventInfo.loadAllEventInfo();
@@ -206,6 +220,8 @@ public class EventManager {
         User u = CatERing.getInstance().getUserManager().getCurrentUser();
         return Event.loadAllEventInfo(u);
     }
+
+
 }
 
 

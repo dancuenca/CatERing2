@@ -7,7 +7,6 @@ import businesslogic.event.Service;
 import businesslogic.menu.Menu;
 import businesslogic.shift.Shift;
 import businesslogic.shift.StaffMember;
-import javafx.collections.ObservableList;
 import persistence.PersistenceManager;
 
 import java.util.ArrayList;
@@ -42,6 +41,11 @@ public class TestEvent {
 
             System.out.println("\nTEST CREATE SHIFTS");
             ArrayList<Shift> shifts = CatERing.getInstance().getShiftManager().createAllShifts(serv, serv.getStartTime(), serv.getEndTime(), 3);
+
+            System.out.println("\nTEST UPDATE EVENT");
+            CatERing.getInstance().getEventManager().changeEventTitle("modifica titolo evento");
+            System.out.println("ev id: " + ev.getId());
+            System.out.println(ev);
 
             System.out.println(serv.getShifts());
             System.out.println("\nTEST ASSEGNAMENTO COMPITO A MEMBRO PERSONALE");

@@ -26,4 +26,9 @@ public class EventPersistence implements EventEventReceiver {
     @Override
     public void updateAssignmentAdded(Assignment assignment) {Assignment.saveNewAssignment(assignment); }
 
+    @Override
+    public void updateEventTitleChanged(Event ev){
+        Event.saveEventTitle(ev);
+    }
+
 }

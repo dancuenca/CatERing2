@@ -49,7 +49,6 @@ public class Recurrence {
     //TODO: crea metodo per trovare numIstances da endDate
 
     private void populateRecEventsList(Event mainEvent){
-        mainEvent.setRecurrence(this);
         for(int i = 1; i <= this.numInstances; i++){
 
             Event recEv = new Event(mainEvent.getOrganizer(), mainEvent.getTitle(), mainEvent.getLocation(),
