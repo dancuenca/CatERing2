@@ -31,4 +31,14 @@ public class EventPersistence implements EventEventReceiver {
         Event.saveEventTitle(ev);
     }
 
+    @Override
+    public void updateEventStartDateChanged(Event ev){
+        Event.saveEventStartDate(ev);
+    }
+
+    @Override
+    public void updateEventEndDateChanged(Event ev){
+        Event.saveEventEndDate(ev);
+    }
+
 }

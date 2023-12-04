@@ -335,7 +335,17 @@ public class Event {
 
 
     public static void saveEventTitle(Event ev) {
-        String titleUpdate = "UPDATE catering.eventscatering SET title = '" + PersistenceManager.escapeString(ev.getTitle()) + "' " + "WHERE id = " + ev.getId();
+        String titleUpdate = "UPDATE catering.eventscatering SET title = '" + PersistenceManager.escapeString(ev.title) + "' " + "WHERE id = " + ev.id;
         PersistenceManager.executeUpdate(titleUpdate);
+    }
+
+    public static void saveEventStartDate(Event ev){
+        String startDateUpdate = "UPDATE catering.eventscatering SET start_date = '" + new java.sql.Date(ev.startDate.getTime()) + "' " + "WHERE id = " + ev.id;
+        PersistenceManager.executeUpdate(startDateUpdate);
+    }
+
+    public static void saveEventEndDate(Event ev){
+        String endDateUpdate = "UPDATE catering.eventscatering SET end_date = '" + new java.sql.Date(ev.endDate.getTime()) + "' " + "WHERE id = " + ev.id;
+        PersistenceManager.executeUpdate(endDateUpdate);
     }
 }

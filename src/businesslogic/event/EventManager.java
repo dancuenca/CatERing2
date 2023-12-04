@@ -8,6 +8,8 @@ import businesslogic.user.User;
 import javafx.collections.ObservableList;
 import persistence.EventPersistence;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -107,6 +109,36 @@ public class EventManager {
 
         currentEvent.setTitle(title);
         this.notifyEventTitleChanged();
+    }
+
+    public void changeEventStartDate(String date) throws UseCaseLogicException{
+        if(currentEvent == null){
+            throw new UseCaseLogicException();
+        }
+
+        currentEvent.setStartDate(convertStringToDate(date));
+        this.notifyEventStartDateChanged();
+    }
+
+    public void changeEventEndDate(String date) throws UseCaseLogicException{
+        if(currentEvent == null){
+            throw new UseCaseLogicException();
+        }
+
+        currentEvent.setEndDate(convertStringToDate(date));
+        this.notifyEventEndDateChanged();
+    }
+
+    private static Date convertStringToDate(String dateString){
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+
+        try{
+            Date result = sdf.parse(dateString);
+            return result;
+        } catch (ParseException e){
+            e.printStackTrace();
+            return null;
+        }
     }
 
 /*
@@ -211,6 +243,17 @@ public class EventManager {
         }
     }
 
+    private void notifyEventStartDateChanged(){
+        for(EventEventReceiver er: this.eventReceivers){
+            er.updateEventStartDateChanged(this.currentEvent);
+        }
+    }
+
+    private void notifyEventEndDateChanged(){
+        for(EventEventReceiver er: this.eventReceivers){
+            er.updateEventEndDateChanged(this.currentEvent);
+        }
+    }
 
     public ObservableList<EventInfo> getEventInfo() {
         return EventInfo.loadAllEventInfo();

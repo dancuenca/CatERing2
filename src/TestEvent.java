@@ -42,10 +42,18 @@ public class TestEvent {
             System.out.println("\nTEST CREATE SHIFTS");
             ArrayList<Shift> shifts = CatERing.getInstance().getShiftManager().createAllShifts(serv, serv.getStartTime(), serv.getEndTime(), 3);
 
-            System.out.println("\nTEST UPDATE EVENT");
+            System.out.println("\nTEST UPDATE EVENT TITLE");
             CatERing.getInstance().getEventManager().changeEventTitle("modifica titolo evento");
             System.out.println("ev id: " + ev.getId());
             System.out.println(ev);
+
+            System.out.println("\nTEST UPDATE EVENT START DATE");
+            CatERing.getInstance().getEventManager().changeEventStartDate("07-07-1997");
+            System.out.println("ev id: " + ev.getId());
+
+            System.out.println("\nTEST UPDATE EVENT END DATE");
+            CatERing.getInstance().getEventManager().changeEventEndDate("07-07-1997");
+            System.out.println("ev id: " + ev.getId());
 
             System.out.println(serv.getShifts());
             System.out.println("\nTEST ASSEGNAMENTO COMPITO A MEMBRO PERSONALE");
