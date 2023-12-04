@@ -51,4 +51,9 @@ public class EventPersistence implements EventEventReceiver {
         Event.saveEventNumParticipants(ev);
     }
 
+    @Override
+    public void updateEventNoteAdded(Event ev){
+        Event.notesToDB(ev);
+    }
+
 }

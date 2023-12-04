@@ -16,7 +16,15 @@ public class TestEvent1b {
             CatERing.getInstance().getUserManager().fakeLogin("Lidia");
             System.out.println(CatERing.getInstance().getUserManager().getCurrentUser());
 
-            Event ev = CatERing.getInstance().getEventManager().createEvent("Cena capodanno", "Casa di mox", "31-12-2023", "01-01-2024", 69, "Dan Cuenca", new String[]{"Portare droga", "Portare alcol", "Portare bitches"});
+            ArrayList<String> notes = new ArrayList<>();
+            String note1 = "Portare droga";
+            notes.add(note1);
+            String note2 = "Portare alcol";
+            notes.add(note2);
+            String note3 = "Portare bitches";
+            notes.add(note3);
+
+            Event ev = CatERing.getInstance().getEventManager().createEvent("Cena capodanno", "Casa di mox", "31-12-2023", "01-01-2024", 69, "Dan Cuenca", notes);
             System.out.println(ev.toString());
 
             Service serv = CatERing.getInstance().getEventManager().insertService(ev, ev.getStartDate(), "Colazione Swag", "05:00", "10:00", false);
@@ -36,7 +44,15 @@ public class TestEvent1b {
             CatERing.getInstance().getUserManager().fakeLogin("Lidia");
             System.out.println(CatERing.getInstance().getUserManager().getCurrentUser());
 
-            Event ev = CatERing.getInstance().getEventManager().createEvent("Cena capodanno", "Casa di mox", "31-12-2023", "01-01-2024", 69, "Dan Cuenca", new String[]{"Portare droga", "Portare alcol", "Portare bitches"});
+            ArrayList<String> notes = new ArrayList<>();
+            String note1 = "Portare droga";
+            notes.add(note1);
+            String note2 = "Portare alcol";
+            notes.add(note2);
+            String note3 = "Portare bitches";
+            notes.add(note3);
+
+            Event ev = CatERing.getInstance().getEventManager().createEvent("Cena capodanno", "Casa di mox", "31-12-2023", "01-01-2024", 69, "Dan Cuenca", notes);
             System.out.println(ev.toString());
 
             Recurrence rec = CatERing.getInstance().getEventManager().defineRecurrence(3, 3, "11-09-2001", ev);

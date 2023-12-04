@@ -21,7 +21,14 @@ public class TestEvent {
             System.out.println(CatERing.getInstance().getUserManager().getCurrentUser());
 
             System.out.println("\nTEST CREATE EVENT");
-            Event ev = CatERing.getInstance().getEventManager().createEvent("Ex titolo", "Ex location", "11-09-2001", "10-11-2023", 69, "Daniele Rossi", new String[]{"nota1", "nota2", "nota3"});
+            ArrayList<String> notes = new ArrayList<>();
+            String note1 = "nota1";
+            notes.add(note1);
+            String note2 = "note2";
+            notes.add(note2);
+            String note3 = "note3";
+            notes.add(note3);
+            Event ev = CatERing.getInstance().getEventManager().createEvent("Ex titolo", "Ex location", "11-09-2001", "10-11-2023", 69, "Daniele Rossi", notes);
             System.out.println(ev.toString());
 
             System.out.println("\nTEST CREATE RECURRENCE");
@@ -62,6 +69,9 @@ public class TestEvent {
             System.out.println("\nTEST UPDATE EVENT NUM PARTICIPANTS");
             CatERing.getInstance().getEventManager().changeEventNumParticipants(420);
             System.out.println("ev id: " + ev.getId());
+
+            System.out.println("\nTEST UPDATE EVENT ADD NOTES");
+            CatERing.getInstance().getEventManager().addNoteToEvent("aggiunta nota");
 
             System.out.println(serv.getShifts());
             System.out.println("\nTEST ASSEGNAMENTO COMPITO A MEMBRO PERSONALE");

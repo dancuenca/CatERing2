@@ -11,6 +11,7 @@ public interface EventEventReceiver {
     public void updateEventEndDateChanged(Event ev);
     public void updateEventLocationChanged(Event ev);
     public void updateEventNumParticipantsChanged(Event ev);
+    public void updateEventNoteAdded(Event ev);
 
     /*
     public void updateEventCancelled(Event ev);

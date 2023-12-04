@@ -25,7 +25,7 @@ public class EventManager {
         return this.createEvent(title, location, startDate, endDate, numParticipants, client, null);
     }
 
-    public Event createEvent(String title, String location, String startDate, String endDate, int numParticipants, String client, String[] notes) throws UseCaseLogicException {
+    public Event createEvent(String title, String location, String startDate, String endDate, int numParticipants, String client, ArrayList<String> notes) throws UseCaseLogicException {
         User user = CatERing.getInstance().getUserManager().getCurrentUser();
 
         if(!user.isOrganizer()){
@@ -159,6 +159,15 @@ public class EventManager {
         this.notifyEventNumParticipantsChanged();
     }
 
+    public void addNoteToEvent(String note) throws UseCaseLogicException{
+        if(currentEvent == null){
+            throw new UseCaseLogicException();
+        }
+
+        currentEvent.addNote(note);
+        this.notifyEventNoteAdded();
+    }
+
 /*
     public Event cancelEvent(Event event, boolean spread) throws UseCaseLogicException{
         User user = CatERing.getInstance().getUserManager().getCurrentUser();
@@ -282,6 +291,12 @@ public class EventManager {
     private void notifyEventNumParticipantsChanged(){
         for(EventEventReceiver er: this.eventReceivers){
             er.updateEventNumParticipantsChanged(this.currentEvent);
+        }
+    }
+
+    private void notifyEventNoteAdded(){
+        for(EventEventReceiver er: this.eventReceivers){
+            er.updateEventNoteAdded(this.currentEvent);
         }
     }
 

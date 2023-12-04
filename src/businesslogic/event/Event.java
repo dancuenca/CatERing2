@@ -7,6 +7,7 @@ import persistence.BatchUpdateHandler;
 import persistence.PersistenceManager;
 import persistence.ResultHandler;
 
+import java.sql.Array;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -23,7 +24,7 @@ public class Event {
     private Date endDate;
     private String location;
     private int numParticipants;
-    private String[] notes;
+    private ArrayList<String> notes;
     private String state;
     private Recurrence recurrence;
 
@@ -32,7 +33,7 @@ public class Event {
     private User organizer;
 
 
-    public Event(User user, String title, String location, String startDate, String endDate, int numParticipants, String client, String[] notes){
+    public Event(User user, String title, String location, String startDate, String endDate, int numParticipants, String client, ArrayList<String> notes){
         if(notes != null){
             this.notes = notes;
         }
@@ -51,7 +52,7 @@ public class Event {
 
     }
 
-    public Event(User user, String title, String location, Date startDate, Date endDate, int numParticipants, String client, String[] notes){
+    public Event(User user, String title, String location, Date startDate, Date endDate, int numParticipants, String client, ArrayList<String> notes){
         if(notes != null){
             this.notes = notes;
         }
@@ -129,7 +130,7 @@ public class Event {
         return numParticipants;
     }
 
-    public String[] getNotes() {
+    public ArrayList<String> getNotes() {
         return notes;
     }
 
@@ -174,8 +175,12 @@ public class Event {
         this.numParticipants = numParticipants;
     }
 
-    public void setNotes(String[] notes) {
+    public void setNotes(ArrayList<String> notes) {
         this.notes = notes;
+    }
+
+    public void addNote(String note){
+        this.notes.add(note);
     }
 
     public ArrayList<Service> getServices() {
@@ -272,13 +277,13 @@ public class Event {
         PersistenceManager.executeUpdate(delEv);
     }
 
-    private static void notesToDB(Event ev) {
+    public static void notesToDB(Event ev) {
         String featureInsert = "INSERT INTO catering.NotesCatering (event_id, note) VALUES (?, ?)";
-        PersistenceManager.executeBatchUpdate(featureInsert, ev.getNotes().length, new BatchUpdateHandler() {
+        PersistenceManager.executeBatchUpdate(featureInsert, ev.getNotes().size(), new BatchUpdateHandler() {
             @Override
             public void handleBatchItem(PreparedStatement ps, int batchCount) throws SQLException {
                 ps.setInt(1, ev.id);
-                ps.setString(2, PersistenceManager.escapeString(ev.getNotes()[batchCount]));
+                ps.setString(2, PersistenceManager.escapeString(ev.getNotes().get(batchCount)));
             }
 
             @Override
