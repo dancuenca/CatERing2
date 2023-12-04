@@ -9,6 +9,7 @@ public interface EventEventReceiver {
     public void updateEventTitleChanged(Event ev);
     public void updateEventStartDateChanged(Event ev);
     public void updateEventEndDateChanged(Event ev);
+    public void updateEventLocationChanged(Event ev);
 
     /*
     public void updateEventCancelled(Event ev);

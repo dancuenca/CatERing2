@@ -348,4 +348,9 @@ public class Event {
         String endDateUpdate = "UPDATE catering.eventscatering SET end_date = '" + new java.sql.Date(ev.endDate.getTime()) + "' " + "WHERE id = " + ev.id;
         PersistenceManager.executeUpdate(endDateUpdate);
     }
+
+    public static void saveEventLocation(Event ev){
+        String locationUpdate = "UPDATE catering.eventscatering SET location = '" + ev.location + "' " + "WHERE id = " + ev.id;
+        PersistenceManager.executeUpdate(locationUpdate);
+    }
 }

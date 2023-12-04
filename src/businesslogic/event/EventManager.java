@@ -129,6 +129,15 @@ public class EventManager {
         this.notifyEventEndDateChanged();
     }
 
+    public void changeEventLocation(String location) throws UseCaseLogicException{
+        if(currentEvent == null){
+            throw new UseCaseLogicException();
+        }
+
+        currentEvent.setLocation(location);
+        this.notifyEventLocationChanged();
+    }
+
     private static Date convertStringToDate(String dateString){
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 
@@ -252,6 +261,12 @@ public class EventManager {
     private void notifyEventEndDateChanged(){
         for(EventEventReceiver er: this.eventReceivers){
             er.updateEventEndDateChanged(this.currentEvent);
+        }
+    }
+
+    private void notifyEventLocationChanged(){
+        for(EventEventReceiver er: this.eventReceivers){
+            er.updateEventLocationChanged(this.currentEvent);
         }
     }
 

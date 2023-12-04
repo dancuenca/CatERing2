@@ -55,6 +55,10 @@ public class TestEvent {
             CatERing.getInstance().getEventManager().changeEventEndDate("07-07-1997");
             System.out.println("ev id: " + ev.getId());
 
+            System.out.println("\nTEST UPDATE EVENT LOCATION");
+            CatERing.getInstance().getEventManager().changeEventLocation("modifica location");
+            System.out.println("ev id: " + ev.getId());
+
             System.out.println(serv.getShifts());
             System.out.println("\nTEST ASSEGNAMENTO COMPITO A MEMBRO PERSONALE");
             ArrayList<StaffMember> availableStaffMembers = CatERing.getInstance().getEventManager().getStaffMembers();
