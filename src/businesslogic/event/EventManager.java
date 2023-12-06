@@ -10,8 +10,13 @@ import persistence.EventPersistence;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
+
+import static businesslogic.event.Recurrence.changeDateByAddDays;
 
 public class EventManager {
     private Event currentEvent;
@@ -102,31 +107,69 @@ public class EventManager {
         return ev;
     }
 
-    public void changeEventTitle(String title) throws UseCaseLogicException{
-        if(currentEvent == null){
+    public void changeEventTitle(String title, boolean spread) throws UseCaseLogicException {
+        if (currentEvent == null) {
             throw new UseCaseLogicException();
         }
-
+        if(spread) {
+            for (Event recEvent : currentEvent.getRecurrence().getRecurrentEvents()) {
+                recEvent.setTitle(title);
+                this.notifyEventTitleChanged(recEvent);
+            }
+        }
         currentEvent.setTitle(title);
-        this.notifyEventTitleChanged();
+        this.notifyEventTitleChanged(currentEvent);
     }
 
-    public void changeEventStartDate(String date) throws UseCaseLogicException{
-        if(currentEvent == null){
+    public void changeEventStartDate(String date, boolean spread) throws UseCaseLogicException{
+        if(currentEvent == null ){
             throw new UseCaseLogicException();
         }
+        if(spread){
+            //calcola il numero di giorni di differenza tra data iniziale vecchia e data iniziale nuova
+            Date oldDate = this.currentEvent.getStartDate();
+            Date newDate = convertStringToDate(date);
+            int numDays = dateDifference(oldDate, newDate);
 
+            for (Event recEvent : currentEvent.getRecurrence().getRecurrentEvents()) {
+                Date updatedDate = changeDateByAddDays(recEvent.getStartDate(), numDays);
+                recEvent.setStartDate(updatedDate);
+                this.notifyEventStartDateChanged(recEvent);
+            }
+        }
         currentEvent.setStartDate(convertStringToDate(date));
-        this.notifyEventStartDateChanged();
+        this.notifyEventStartDateChanged(currentEvent);
     }
 
-    public void changeEventEndDate(String date) throws UseCaseLogicException{
+    public void changeEventEndDate(String date, boolean spread) throws UseCaseLogicException{
         if(currentEvent == null){
             throw new UseCaseLogicException();
         }
+        if(spread){
+            //calcola il numero di giorni di differenza tra data iniziale vecchia e data iniziale nuova
+            Date oldDate = this.currentEvent.getEndDate();
+            Date newDate = convertStringToDate(date);
+            int numDays = dateDifference(oldDate, newDate);
 
+            for (Event recEvent : currentEvent.getRecurrence().getRecurrentEvents()) {
+                Date updatedDate = changeDateByAddDays(recEvent.getEndDate(), numDays);
+                recEvent.setEndDate(updatedDate);
+                this.notifyEventStartDateChanged(recEvent);
+            }
+        }
         currentEvent.setEndDate(convertStringToDate(date));
-        this.notifyEventEndDateChanged();
+        this.notifyEventEndDateChanged(currentEvent);
+    }
+
+    private int dateDifference(Date oldDate, Date newDate) {
+        int numDays = 0;
+
+        LocalDate newLocalDate = newDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate oldLocalDate = oldDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+        numDays = (int) ChronoUnit.DAYS.between(oldLocalDate, newLocalDate);
+
+        return numDays;
     }
 
     private static Date convertStringToDate(String dateString){
@@ -141,22 +184,32 @@ public class EventManager {
         }
     }
 
-    public void changeEventLocation(String location) throws UseCaseLogicException{
+    public void changeEventLocation(String location, boolean spread) throws UseCaseLogicException{
         if(currentEvent == null){
             throw new UseCaseLogicException();
         }
-
+        if(spread) {
+            for (Event recEvent : currentEvent.getRecurrence().getRecurrentEvents()) {
+                recEvent.setLocation(location);
+                this.notifyEventLocationChanged(recEvent);
+            }
+        }
         currentEvent.setLocation(location);
-        this.notifyEventLocationChanged();
+        this.notifyEventLocationChanged(currentEvent);
     }
 
-    public void changeEventNumParticipants(int numParticipants) throws UseCaseLogicException{
+    public void changeEventNumParticipants(int numParticipants, boolean spread) throws UseCaseLogicException{
         if(currentEvent == null){
             throw new UseCaseLogicException();
         }
-
+        if(spread) {
+            for (Event recEvent : currentEvent.getRecurrence().getRecurrentEvents()) {
+                recEvent.setNumParticipants(numParticipants);
+                this.notifyEventNumParticipantsChanged(recEvent);
+            }
+        }
         currentEvent.setNumParticipants(numParticipants);
-        this.notifyEventNumParticipantsChanged();
+        this.notifyEventNumParticipantsChanged(currentEvent);
     }
 
     public void addNoteToEvent(String note) throws UseCaseLogicException{
@@ -189,19 +242,6 @@ public class EventManager {
         this.notifyEventCancelled(event);
 
         return event;
-    }
-
-    public void selectStaff(Shift shift, int id, String task) throws UseCaseLogicException{
-        User user = CatERing.getInstance().getUserManager().getCurrentUser();
-
-        if(!user.isOrganizer()){
-            throw new UseCaseLogicException();
-        }
-
-        StaffMember selectedStaffMember = shift.getById(id);
-        shift.getById(id).setAvailable(false);
-        int indexOfSelectedStaffMember = shift.getAvailableStaffMems().indexOf(selectedStaffMember);
-        shift.setTasksInIndex(indexOfSelectedStaffMember, task);
     }
 
     public void approveMenu(Service serv) throws UseCaseLogicException{
@@ -264,33 +304,33 @@ public class EventManager {
         }
     }
 
-    private void notifyEventTitleChanged(){
+    private void notifyEventTitleChanged(Event ev){
         for(EventEventReceiver er: this.eventReceivers){
-            er.updateEventTitleChanged(this.currentEvent);
+            er.updateEventTitleChanged(ev);
         }
     }
 
-    private void notifyEventStartDateChanged(){
+    private void notifyEventStartDateChanged(Event ev){
         for(EventEventReceiver er: this.eventReceivers){
-            er.updateEventStartDateChanged(this.currentEvent);
+            er.updateEventStartDateChanged(ev);
         }
     }
 
-    private void notifyEventEndDateChanged(){
+    private void notifyEventEndDateChanged(Event ev){
         for(EventEventReceiver er: this.eventReceivers){
-            er.updateEventEndDateChanged(this.currentEvent);
+            er.updateEventEndDateChanged(ev);
         }
     }
 
-    private void notifyEventLocationChanged(){
+    private void notifyEventLocationChanged(Event ev){
         for(EventEventReceiver er: this.eventReceivers){
-            er.updateEventLocationChanged(this.currentEvent);
+            er.updateEventLocationChanged(ev);
         }
     }
 
-    private void notifyEventNumParticipantsChanged(){
+    private void notifyEventNumParticipantsChanged(Event ev){
         for(EventEventReceiver er: this.eventReceivers){
-            er.updateEventNumParticipantsChanged(this.currentEvent);
+            er.updateEventNumParticipantsChanged(ev);
         }
     }
 

@@ -50,25 +50,67 @@ public class TestEvent {
             ArrayList<Shift> shifts = CatERing.getInstance().getShiftManager().createAllShifts(serv, serv.getStartTime(), serv.getEndTime(), 3);
 
             System.out.println("\nTEST UPDATE EVENT TITLE");
-            CatERing.getInstance().getEventManager().changeEventTitle("modifica titolo evento");
+            CatERing.getInstance().getEventManager().changeEventTitle("modifica titolo evento", false);
             System.out.println("ev id: " + ev.getId());
             System.out.println(ev);
 
-            System.out.println("\nTEST UPDATE EVENT START DATE");
-            CatERing.getInstance().getEventManager().changeEventStartDate("07-07-1997");
-            System.out.println("ev id: " + ev.getId());
+            System.out.println("\nTEST UPDATE RECURRENT EVENTS TITLES ");
+            CatERing.getInstance().getEventManager().changeEventTitle("modifica titolo evento", true);
+            for (Event recEv: rec.getRecurrentEvents() ){
+                System.out.println(recEv.getTitle());
+            }
 
-            System.out.println("\nTEST UPDATE EVENT END DATE");
-            CatERing.getInstance().getEventManager().changeEventEndDate("07-07-1997");
-            System.out.println("ev id: " + ev.getId());
+            /*
+            System.out.println("\nTEST UPDATE EVENT START-DATE");
+            CatERing.getInstance().getEventManager().changeEventStartDate("13-11-2023", false);
+            System.out.println("ev id: " + ev.getStartDate()); */
 
+            System.out.println("\nTEST UPDATE RECURRENT EVENTS START-DATES");
+            CatERing.getInstance().getEventManager().changeEventStartDate("13-11-2001", true);
+            System.out.println("(MAIN EVENT) TITLE: " + ev.getTitle()  + "   START-DATE: " + ev.getStartDate());
+            for (Event recEv: rec.getRecurrentEvents() ){
+                System.out.println("TITLE: " + recEv.getTitle()  + "   START-DATE: " + recEv.getStartDate());
+            }
+
+            /*
+            System.out.println("\nTEST UPDATE EVENT END-DATE");
+            CatERing.getInstance().getEventManager().changeEventEndDate("13-11-2023", false);
+            System.out.println("ev id: " + ev.getStartDate());
+             */
+
+            System.out.println("\nTEST UPDATE RECURRENT EVENTS END-DATE");
+            CatERing.getInstance().getEventManager().changeEventEndDate("13-11-2023", true);
+            System.out.println("(MAIN EVENT) TITLE: " + ev.getTitle()  + "   END-DATE: " + ev.getEndDate());
+            for (Event recEv: rec.getRecurrentEvents() ){
+                System.out.println("TITLE: " + recEv.getTitle()  + "   END-DATE: " + recEv.getEndDate());
+            }
+
+            /*
             System.out.println("\nTEST UPDATE EVENT LOCATION");
-            CatERing.getInstance().getEventManager().changeEventLocation("modifica location");
-            System.out.println("ev id: " + ev.getId());
+            CatERing.getInstance().getEventManager().changeEventLocation("modifica location", false);
+            System.out.println("ev id: " + ev.getId()); */
 
+            System.out.println("\nTEST UPDATE RECURRENT EVENTS LOCATION");
+
+            CatERing.getInstance().getEventManager().changeEventLocation("modifica location", true);
+            System.out.println("(MAIN EVENT) TITLE: " + ev.getTitle()  + "   LOCATION: " + ev.getLocation());
+            for (Event recEv: rec.getRecurrentEvents() ){
+                System.out.println("TITLE: " + recEv.getTitle()  + "   LOCATION: " + recEv.getLocation());
+            }
+
+            /*
             System.out.println("\nTEST UPDATE EVENT NUM PARTICIPANTS");
             CatERing.getInstance().getEventManager().changeEventNumParticipants(420);
             System.out.println("ev id: " + ev.getId());
+            */
+
+            System.out.println("\nTEST UPDATE EVENT NUM PARTICIPANTS");
+            CatERing.getInstance().getEventManager().changeEventNumParticipants(420, true);
+            System.out.println("(MAIN EVENT) TITLE: " + ev.getTitle()  + "   PARTICIPANTS: " + ev.getNumParticipants());
+            for (Event recEv: rec.getRecurrentEvents() ){
+                System.out.println("TITLE: " + recEv.getTitle()  + "   PARTICIPANTS: " + recEv.getNumParticipants());
+            }
+
 
             System.out.println("\nTEST UPDATE EVENT ADD NOTES");
             CatERing.getInstance().getEventManager().addNoteToEvent("aggiunta nota");

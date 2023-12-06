@@ -7,7 +7,6 @@ import persistence.BatchUpdateHandler;
 import persistence.PersistenceManager;
 import persistence.ResultHandler;
 
-import java.sql.Array;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -337,7 +336,6 @@ public class Event {
 
         return all;
     }
-
 
     public static void saveEventTitle(Event ev) {
         String titleUpdate = "UPDATE catering.eventscatering SET title = '" + PersistenceManager.escapeString(ev.title) + "' " + "WHERE id = " + ev.id;

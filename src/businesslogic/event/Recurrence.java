@@ -66,7 +66,7 @@ public class Recurrence {
         }
     }
 
-    private static Date changeDateByAddDays(Date initialDate, int numDays){
+    public static Date changeDateByAddDays(Date initialDate, int numDays){
         Calendar cal = Calendar.getInstance();
         cal.setTime(initialDate);
 
