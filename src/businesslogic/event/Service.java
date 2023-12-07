@@ -1,5 +1,6 @@
 package businesslogic.event;
 
+import businesslogic.menu.Chef;
 import businesslogic.menu.Menu;
 import businesslogic.shift.Shift;
 import persistence.BatchUpdateHandler;

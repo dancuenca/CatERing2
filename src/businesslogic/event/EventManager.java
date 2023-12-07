@@ -2,6 +2,7 @@ package businesslogic.event;
 
 import businesslogic.CatERing;
 import businesslogic.UseCaseLogicException;
+import businesslogic.menu.Chef;
 import businesslogic.shift.Shift;
 import businesslogic.shift.StaffMember;
 import businesslogic.user.User;
@@ -85,15 +86,29 @@ public class EventManager {
         return StaffMember.loadAvailableStaffMembers();
     }
 
+    public ArrayList<Chef> getChefs(){
+        return Chef.loadAvailableChefs();
+    }
+
     public Assignment defineAssignment(Service service, StaffMember staffMember, Shift shift, String task) throws UseCaseLogicException{
         if(currentEvent == null && !this.currentEvent.getServices().contains(service) && !service.getShifts().contains(shift)) {
             throw new UseCaseLogicException();
         }
+
         Assignment assignment = new Assignment(staffMember, shift, task);
         shift.getAvailableStaffMems().add(staffMember);
         this.notifyAssignmentAdded(assignment);
 
         return assignment;
+    }
+
+    public void assignChef(Chef chef) throws UseCaseLogicException{
+        if(currentEvent == null){
+            throw new UseCaseLogicException();
+        }
+
+        currentEvent.setChef(chef);
+        this.notifyChefAssigned(currentEvent, chef);
     }
 
     public Event deleteEvent(Event ev, boolean spread) throws UseCaseLogicException{
@@ -304,6 +319,12 @@ public class EventManager {
         }
     }
 
+    private void notifyChefAssigned(Event ev, Chef chef){
+        for(EventEventReceiver er: this.eventReceivers){
+            er.updateChefAssigned(ev, chef);
+        }
+    }
+
     private void notifyEventTitleChanged(Event ev){
         for(EventEventReceiver er: this.eventReceivers){
             er.updateEventTitleChanged(ev);
@@ -348,7 +369,6 @@ public class EventManager {
         User u = CatERing.getInstance().getUserManager().getCurrentUser();
         return Event.loadAllEventInfo(u);
     }
-
 }
 
 

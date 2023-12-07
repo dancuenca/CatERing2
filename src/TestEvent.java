@@ -4,6 +4,7 @@ import businesslogic.event.Assignment;
 import businesslogic.event.Event;
 import businesslogic.event.Recurrence;
 import businesslogic.event.Service;
+import businesslogic.menu.Chef;
 import businesslogic.menu.Menu;
 import businesslogic.shift.Shift;
 import businesslogic.shift.StaffMember;
@@ -115,8 +116,15 @@ public class TestEvent {
             System.out.println("\nTEST UPDATE EVENT ADD NOTES");
             CatERing.getInstance().getEventManager().addNoteToEvent("aggiunta nota");
 
+            System.out.println("\nTEST ASSIGN CHEF");
+            ArrayList<Chef> availableChef = CatERing.getInstance().getEventManager().getChefs();
+            CatERing.getInstance().getEventManager().assignChef(availableChef.get(0));
+
+            System.out.println(availableChef);
+
+
             System.out.println(serv.getShifts());
-            System.out.println("\nTEST ASSEGNAMENTO COMPITO A MEMBRO PERSONALE");
+            System.out.println("\nTEST ASSIGN TASK TO STAFF MEMBER");
             ArrayList<StaffMember> availableStaffMembers = CatERing.getInstance().getEventManager().getStaffMembers();
             Assignment assignment = CatERing.getInstance().getEventManager().defineAssignment(serv, availableStaffMembers.get(0), shifts.get(2), "servire vini");
 

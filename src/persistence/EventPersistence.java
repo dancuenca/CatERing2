@@ -1,6 +1,7 @@
 package persistence;
 
 import businesslogic.event.*;
+import businesslogic.menu.Chef;
 
 public class EventPersistence implements EventEventReceiver {
     @Override
@@ -56,4 +57,9 @@ public class EventPersistence implements EventEventReceiver {
         Event.notesToDB(ev);
     }
 
+    @Override
+    public void updateChefAssigned(Event ev, Chef chef){
+        Event.saveChefAssigned(ev);
+        chef.saveChefEvent(ev, chef);
+    }
 }

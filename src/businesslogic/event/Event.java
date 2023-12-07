@@ -1,5 +1,6 @@
 package businesslogic.event;
 
+import businesslogic.menu.Chef;
 import businesslogic.shift.Shift;
 import businesslogic.shift.StaffMember;
 import businesslogic.user.User;
@@ -26,6 +27,7 @@ public class Event {
     private ArrayList<String> notes;
     private String state;
     private Recurrence recurrence;
+    private Chef chef;
 
     private ArrayList<Service> services;
 
@@ -141,13 +143,17 @@ public class Event {
         return recurrence;
     }
 
-    private int getIdRecurrence () {
+    public int getIdRecurrence () {
         if(recurrence == null) {
             return 0;
         }
         else {
             return recurrence.getId();
         }
+    }
+
+    public Chef getChef(){
+        return chef;
     }
 
     public void setRecurrence(Recurrence recurrence) {
@@ -192,6 +198,10 @@ public class Event {
 
     public void setState(String state) {
         this.state = state;
+    }
+
+    public void setChef(Chef chef){
+        this.chef = chef;
     }
 
     public Service addService(Event ev, Date date, String serviceType, String startTime, String endTime) {
@@ -361,4 +371,10 @@ public class Event {
         String numParticipantsUpdate = "UPDATE catering.eventscatering SET num_participants = '" + ev.numParticipants + "' " + "WHERE id = " + ev.id;
         PersistenceManager.executeUpdate(numParticipantsUpdate);
     }
+
+    public static void saveChefAssigned(Event ev){
+        String chefAssignedUpdate = "UPDATE catering.eventscatering SET chef_id = '" + ev.chef.getId() + "' " + "WHERE id = " + ev.id;
+        PersistenceManager.executeUpdate(chefAssignedUpdate);
+    }
+
 }

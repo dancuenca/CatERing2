@@ -2,3 +2,4 @@
 /out/*
 /.idea/libraries/*
 /.idea/*
+/persistence/PersistenceManager.java
