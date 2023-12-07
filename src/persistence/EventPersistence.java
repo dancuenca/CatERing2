@@ -2,6 +2,7 @@ package persistence;
 
 import businesslogic.event.*;
 import businesslogic.menu.Chef;
+import businesslogic.menu.Menu;
 
 public class EventPersistence implements EventEventReceiver {
     @Override
@@ -61,5 +62,15 @@ public class EventPersistence implements EventEventReceiver {
     public void updateChefAssigned(Event ev, Chef chef){
         Event.saveChefAssigned(ev);
         Chef.saveChefEvent(ev, chef);
+    }
+
+    @Override
+    public void updateMenuForServiceSet(Service serv, Menu m){
+        Service.saveMenuSet(serv, m);
+    }
+
+    @Override
+    public void updateMenuForServiceApproved(Service serv){
+        Service.saveMenuApproved(serv);
     }
 }

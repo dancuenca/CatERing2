@@ -41,9 +41,10 @@ public class TestEvent {
             System.out.println(events);
 
             System.out.println("\nTEST INSERT SERVICE");
-            Menu m = CatERing.getInstance().getMenuManager().createMenu("Menu Mia Dan");
-            Service serv = CatERing.getInstance().getEventManager().insertService(ev, ev.getStartDate(), "Cena", "05:00", "10:00", false);
-            serv.setMenu(m);
+            Menu m = CatERing.getInstance().getMenuManager().createMenu("Menu Test Event");
+            Service serv = CatERing.getInstance().getEventManager().insertService(ev, ev.getStartDate(), "Servizio Test Event", "05:00", "10:00", false);
+            //serv.setMenu(m);
+            CatERing.getInstance().getEventManager().setMenuForService(serv, m);
 
             System.out.println(ev.getServices());
 
@@ -112,7 +113,6 @@ public class TestEvent {
                 System.out.println("TITLE: " + recEv.getTitle()  + "   PARTICIPANTS: " + recEv.getNumParticipants());
             }
 
-
             System.out.println("\nTEST UPDATE EVENT ADD NOTES");
             CatERing.getInstance().getEventManager().addNoteToEvent("aggiunta nota");
 
@@ -130,6 +130,14 @@ public class TestEvent {
             Assignment assignment = CatERing.getInstance().getEventManager().defineAssignment(serv, availableStaffMembers.get(0), shifts.get(2), "servire vini");
 
             System.out.println(assignment);
+
+            System.out.println("\nTEST APPROVE MENU");
+            ArrayList<Menu> publishedMenus = CatERing.getInstance().getMenuManager().getAllPublishedMenus();
+            System.out.println(publishedMenus);
+            CatERing.getInstance().getMenuManager().publish();
+            CatERing.getInstance().getEventManager().approveMenu(ev.getServices().get(0), publishedMenus.get(0));
+
+            //TODO:cambiare stato dell'evento se tutti i menu di tutti i servizi sono approvati
 
         } catch (UseCaseLogicException ex) {
             System.out.println("Errore di logica nello use case");

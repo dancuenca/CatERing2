@@ -1,6 +1,7 @@
 package businesslogic.event;
 
 import businesslogic.menu.Chef;
+import businesslogic.menu.Menu;
 
 public interface EventEventReceiver {
     public void updateEventCreated(Event ev);
@@ -15,6 +16,8 @@ public interface EventEventReceiver {
     public void updateEventNumParticipantsChanged(Event ev);
     public void updateEventNoteAdded(Event ev);
     public void updateChefAssigned(Event ev, Chef chef);
+    public void updateMenuForServiceSet(Service serv, Menu m);
+    public void updateMenuForServiceApproved(Service serv);
 
     /*
     public void updateEventCancelled(Event ev);

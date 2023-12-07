@@ -3,6 +3,7 @@ package businesslogic.event;
 import businesslogic.CatERing;
 import businesslogic.UseCaseLogicException;
 import businesslogic.menu.Chef;
+import businesslogic.menu.Menu;
 import businesslogic.shift.Shift;
 import businesslogic.shift.StaffMember;
 import businesslogic.user.User;
@@ -236,6 +237,24 @@ public class EventManager {
         this.notifyEventNoteAdded();
     }
 
+    public void setMenuForService(Service serv, Menu m) throws UseCaseLogicException{
+        if(currentEvent == null){
+            throw new UseCaseLogicException();
+        }
+
+        serv.setMenu(m);
+        this.notifyMenuForServiceSet(serv, m);
+    }
+
+    public void approveMenu(Service serv, Menu m) throws UseCaseLogicException{
+        if(currentEvent == null){
+            throw new UseCaseLogicException();
+        }
+
+        serv.setApproveMenu();
+        this.notifyMenuForServiceApproved(serv);
+    }
+
 /*
     public Event cancelEvent(Event event, boolean spread) throws UseCaseLogicException{
         User user = CatERing.getInstance().getUserManager().getCurrentUser();
@@ -358,6 +377,18 @@ public class EventManager {
     private void notifyEventNoteAdded(){
         for(EventEventReceiver er: this.eventReceivers){
             er.updateEventNoteAdded(this.currentEvent);
+        }
+    }
+
+    private void notifyMenuForServiceSet(Service serv, Menu m){
+        for(EventEventReceiver er: this.eventReceivers){
+            er.updateMenuForServiceSet(serv, m);
+        }
+    }
+
+    private void notifyMenuForServiceApproved(Service serv){
+        for(EventEventReceiver er: this.eventReceivers){
+            er.updateMenuForServiceApproved(serv);
         }
     }
 

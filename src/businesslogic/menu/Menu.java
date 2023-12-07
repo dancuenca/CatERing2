@@ -28,6 +28,7 @@ public class Menu {
     private ObservableList<Section> sections;
 
     private User owner;
+    private int ownerId;
 
     private Menu() {
         this.featuresMap = FXCollections.observableHashMap();
@@ -492,6 +493,27 @@ public class Menu {
             loadedMenus.put(m.id, m);
         }
         return FXCollections.observableArrayList(loadedMenus.values());
+    }
+
+    public static ArrayList<Menu> loadAllPublishedMenus(){
+        String query = "SELECT * FROM catering.menus WHERE true";
+        ArrayList<Menu> result = new ArrayList<>();
+
+        PersistenceManager.executeQuery(query, new ResultHandler() {
+            @Override
+            public void handle(ResultSet rs) throws SQLException {
+                Menu m = new Menu();
+                m.id = rs.getInt("id");
+                m.title = rs.getString("title");
+                m.owner = User.loadUserById(rs.getInt("owner_id"));
+                m.ownerId = rs.getInt("owner_id");
+                m.published = rs.getBoolean("published");
+
+                result.add(m);
+            }
+        });
+
+        return result;
     }
 
     public static void saveSectionOrder(Menu m) {

@@ -311,6 +311,10 @@ public class MenuManager {
         return Menu.loadAllMenus();
     }
 
+    public ArrayList<Menu> getAllPublishedMenus(){
+        return Menu.loadAllPublishedMenus();
+    }
+
     public void addEventReceiver(MenuEventReceiver rec) {
         this.eventReceivers.add(rec);
     }

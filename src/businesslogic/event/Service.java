@@ -74,7 +74,7 @@ public class Service {
         this.menu = menu;
     }
 
-    public void approveMenu(){
+    public void setApproveMenu(){
         approvedMenu = true;
     }
 
@@ -131,18 +131,15 @@ public class Service {
                 }
             }
         });
+    }
 
-        if (result[0] > 0) { // servizio effettivamente inserito
+    public static void saveMenuSet(Service serv, Menu m){
+        String serviceMenuUpdate = "UPDATE catering.servicescatering SET menu_id = '" + m.getId() + "' WHERE id = " + serv.getId();
+        PersistenceManager.executeUpdate(serviceMenuUpdate);
+    }
 
-            // salva i turni
-            /*
-            if (serv.getShifts().size() > 0) {
-                Shift.saveAllNewShifts(serv, serv.shifts);
-            }
-
-             */
-
-        }
-
+    public static void saveMenuApproved(Service serv){
+        String menuApprovedUpdate = "UPDATE catering.servicescatering SET approved = 1 WHERE id = " + serv.getId();
+        PersistenceManager.executeUpdate(menuApprovedUpdate);
     }
 }
