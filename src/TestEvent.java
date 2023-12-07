@@ -121,6 +121,7 @@ public class TestEvent {
             CatERing.getInstance().getEventManager().assignChef(availableChef.get(0));
 
             System.out.println(availableChef);
+            System.out.println("assigned chef: " + ev.getChef());
 
 
             System.out.println(serv.getShifts());

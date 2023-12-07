@@ -60,6 +60,6 @@ public class EventPersistence implements EventEventReceiver {
     @Override
     public void updateChefAssigned(Event ev, Chef chef){
         Event.saveChefAssigned(ev);
-        chef.saveChefEvent(ev, chef);
+        Chef.saveChefEvent(ev, chef);
     }
 }

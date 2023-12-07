@@ -87,6 +87,7 @@ public class Chef {
     }
 
     public static void saveChefEvent(Event ev, Chef chef){
+        chef.setEventId(ev.getId());
         String chefEventUpdate = "UPDATE catering.chefscatering SET event_id = '" + ev.getId() + "', " +
                 "availability = 0 " +
                 "WHERE id = " + chef.id;
