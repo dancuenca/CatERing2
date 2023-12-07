@@ -246,9 +246,21 @@ public class EventManager {
         this.notifyMenuForServiceSet(serv, m);
     }
 
-    public void approveMenu(Service serv, Menu m) throws UseCaseLogicException{
-        if(currentEvent == null){
+    public void approveMenu(Service serv) throws UseCaseLogicException{
+        if(currentEvent == null || serv.getMenu() == null){
             throw new UseCaseLogicException();
+        }
+
+        boolean flag = true;
+        for(Service service: serv.getBelongingEvent().getServices()){
+            if(!service.isApprovedMenu()){
+                flag = false;
+            }
+        }
+
+        if(flag){
+            currentEvent.setState("ongoing");
+            this.notifyEventStateChanged(currentEvent);
         }
 
         serv.setApproveMenu();
@@ -389,6 +401,12 @@ public class EventManager {
     private void notifyMenuForServiceApproved(Service serv){
         for(EventEventReceiver er: this.eventReceivers){
             er.updateMenuForServiceApproved(serv);
+        }
+    }
+
+    private void notifyEventStateChanged(Event ev){
+        for(EventEventReceiver er: this.eventReceivers){
+            er.updateEventStateChanged(ev);
         }
     }
 

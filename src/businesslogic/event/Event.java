@@ -212,7 +212,7 @@ public class Event {
 
     // STATIC METHODS FOR PERSISTENCE
     public static void saveNewEvent(Event ev){
-        String eventInsert = "INSERT INTO Catering.EventsCatering (title, start_date, end_date, location, num_participants, recurrence_id, client, organizer_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+        String eventInsert = "INSERT INTO Catering.EventsCatering (title, start_date, end_date, location, num_participants, recurrence_id, client, organizer_id, state) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
         int[] result = PersistenceManager.executeBatchUpdate(eventInsert, 1, new BatchUpdateHandler() {
             @Override
             public void handleBatchItem(PreparedStatement ps, int batchCount) throws SQLException {
@@ -224,6 +224,7 @@ public class Event {
                 ps.setInt(6, ev.getIdRecurrence());
                 ps.setString(7, PersistenceManager.escapeString(ev.client));
                 ps.setInt(8, ev.organizer.getId());
+                ps.setString(9, PersistenceManager.escapeString(ev.state));
             }
 
             @Override
@@ -235,7 +236,7 @@ public class Event {
             }
         });
 
-        if (result[0] > 0) { // menu effettivamente inserito
+        if (result[0] > 0) {
             // salva le note
              notesToDB(ev);
         }
@@ -301,7 +302,7 @@ public class Event {
     }
 
     public static void saveAllNewRecurrentEvents(Recurrence rec, ArrayList<Event> recurrentEvents) {
-        String recEventsInsert = "INSERT INTO catering.EventsCatering (title, start_date, end_date, location, num_participants, recurrence_id, client, organizer_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+        String recEventsInsert = "INSERT INTO catering.EventsCatering (title, start_date, end_date, location, num_participants, recurrence_id, client, organizer_id, state) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
         PersistenceManager.executeBatchUpdate(recEventsInsert, recurrentEvents.size(), new BatchUpdateHandler() {
             @Override
             public void handleBatchItem(PreparedStatement ps, int batchCount) throws SQLException {
@@ -313,6 +314,7 @@ public class Event {
                 ps.setInt(6, rec.getId());
                 ps.setString(7, PersistenceManager.escapeString(rec.getMainEvent().getClient()));
                 ps.setInt(8, rec.getMainEvent().getOrganizer().getId());
+                ps.setString(9, PersistenceManager.escapeString(rec.getMainEvent().getState()));
             }
 
             @Override
@@ -375,6 +377,10 @@ public class Event {
     public static void saveChefAssigned(Event ev){
         String chefAssignedUpdate = "UPDATE catering.eventscatering SET chef_id = '" + ev.chef.getId() + "' " + "WHERE id = " + ev.id;
         PersistenceManager.executeUpdate(chefAssignedUpdate);
+    }
+
+    public static void saveNewEventState(String newState){
+        String stateUpdate = "UPDATE catering.eventscatering SET ";
     }
 
 }

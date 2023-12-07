@@ -18,6 +18,7 @@ public interface EventEventReceiver {
     public void updateChefAssigned(Event ev, Chef chef);
     public void updateMenuForServiceSet(Service serv, Menu m);
     public void updateMenuForServiceApproved(Service serv);
+    public void updateEventStateChanged(Event ev);
 
     /*
     public void updateEventCancelled(Event ev);

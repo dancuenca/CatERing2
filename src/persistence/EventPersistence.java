@@ -73,4 +73,9 @@ public class EventPersistence implements EventEventReceiver {
     public void updateMenuForServiceApproved(Service serv){
         Service.saveMenuApproved(serv);
     }
+
+    @Override
+    public void updateEventStateChanged(Event ev){
+        Event.saveNewEventState(ev.getState());
+    }
 }

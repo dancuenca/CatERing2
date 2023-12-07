@@ -135,7 +135,7 @@ public class TestEvent {
             ArrayList<Menu> publishedMenus = CatERing.getInstance().getMenuManager().getAllPublishedMenus();
             System.out.println(publishedMenus);
             CatERing.getInstance().getMenuManager().publish();
-            CatERing.getInstance().getEventManager().approveMenu(ev.getServices().get(0), publishedMenus.get(0));
+            CatERing.getInstance().getEventManager().approveMenu(ev.getServices().get(0));
 
             //TODO:cambiare stato dell'evento se tutti i menu di tutti i servizi sono approvati
 
