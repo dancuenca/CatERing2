@@ -379,8 +379,9 @@ public class Event {
         PersistenceManager.executeUpdate(chefAssignedUpdate);
     }
 
-    public static void saveNewEventState(String newState){
-        String stateUpdate = "UPDATE catering.eventscatering SET ";
+    public static void saveNewEventState(Event ev){
+        String stateUpdate = "UPDATE catering.eventscatering SET state = '" + ev.getState() + "' WHERE id = " + ev.id;
+        PersistenceManager.executeUpdate(stateUpdate);
     }
 
 }

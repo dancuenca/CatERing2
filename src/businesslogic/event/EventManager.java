@@ -251,8 +251,13 @@ public class EventManager {
             throw new UseCaseLogicException();
         }
 
+        serv.setApproveMenu();
+        this.notifyMenuForServiceApproved(serv);
+
         boolean flag = true;
         for(Service service: serv.getBelongingEvent().getServices()){
+            System.out.println("--------------------------> numero serv di ev: " + serv.getBelongingEvent().getServices().size());
+            System.out.println("--------------------------> menu approvato??? " + service.isApprovedMenu());
             if(!service.isApprovedMenu()){
                 flag = false;
             }
@@ -260,11 +265,10 @@ public class EventManager {
 
         if(flag){
             currentEvent.setState("ongoing");
+            System.out.println("current event state: " + currentEvent.getState());
+
             this.notifyEventStateChanged(currentEvent);
         }
-
-        serv.setApproveMenu();
-        this.notifyMenuForServiceApproved(serv);
     }
 
 /*

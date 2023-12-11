@@ -137,7 +137,7 @@ public class TestEvent {
             CatERing.getInstance().getMenuManager().publish();
             CatERing.getInstance().getEventManager().approveMenu(ev.getServices().get(0));
 
-            //TODO:cambiare stato dell'evento se tutti i menu di tutti i servizi sono approvati
+
 
         } catch (UseCaseLogicException ex) {
             System.out.println("Errore di logica nello use case");

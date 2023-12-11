@@ -76,6 +76,6 @@ public class EventPersistence implements EventEventReceiver {
 
     @Override
     public void updateEventStateChanged(Event ev){
-        Event.saveNewEventState(ev.getState());
+        Event.saveNewEventState(ev);
     }
 }
