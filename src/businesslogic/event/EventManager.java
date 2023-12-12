@@ -128,7 +128,7 @@ public class EventManager {
         currentEvent.setChef(chef);
         this.notifyChefAssigned(currentEvent, chef);
     }
-
+//TODO: aggiungere gestione di evento ricorrente per spread = true
     public Event deleteEvent(Event ev, boolean spread) throws UseCaseLogicException{
         User u = CatERing.getInstance().getUserManager().getCurrentUser();
         if (!u.isOrganizer() || ev.getState().equals("ongoing")){
@@ -136,6 +136,19 @@ public class EventManager {
         }
 
         this.notifyEventDeleted(ev, spread);
+
+        return ev;
+    }
+
+    //TODO: aggiungere gestione di evento ricorrente per spread = true
+    public Event cancelEvent(Event ev, boolean spread) throws UseCaseLogicException{
+        User u = CatERing.getInstance().getUserManager().getCurrentUser();
+        if(!u.isOrganizer() || ev.getState().equals("ongoing")){
+            throw new UseCaseLogicException();
+        }
+
+        ev.setState("cancelled");
+        this.notifyEventCancelled(ev, spread);
 
         return ev;
     }
@@ -432,6 +445,12 @@ public class EventManager {
     private void notifyEventStateChanged(Event ev){
         for(EventEventReceiver er: this.eventReceivers){
             er.updateEventStateChanged(ev);
+        }
+    }
+
+    private void notifyEventCancelled(Event ev, boolean spread){
+        for(EventEventReceiver er: this.eventReceivers){
+            er.updateEventCancelled(ev);
         }
     }
 

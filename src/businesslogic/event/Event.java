@@ -411,6 +411,11 @@ public class Event {
         PersistenceManager.executeUpdate(stateUpdate);
     }
 
+    public static void saveEventCancelled(Event ev){
+        String cancelUpdate = "UPDATE catering.eventscatering SET state = 'cancelled' WHERE id = " + ev.id;
+        PersistenceManager.executeUpdate(cancelUpdate);
+    }
+
     public static Event loadEventById(int eid){
         Event load = new Event();
         String eventQuery = "SELECT * FROM catering.eventscatering WHERE id = " + eid;
