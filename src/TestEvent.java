@@ -49,7 +49,7 @@ public class TestEvent {
             System.out.println(ev.getServices());
 
             System.out.println("\nTEST CREATE SHIFTS");
-            ArrayList<Shift> shifts = CatERing.getInstance().getShiftManager().createAllShifts(serv, serv.getStartTime(), serv.getEndTime(), 3);
+            ArrayList<Shift> shifts = CatERing.getInstance().getShiftManager().createAllShifts(serv, serv.getStartTime(), serv.getEndTime(), 5);
 
             System.out.println("\nTEST UPDATE EVENT TITLE");
             CatERing.getInstance().getEventManager().changeEventTitle("modifica titolo evento", false);
@@ -118,7 +118,7 @@ public class TestEvent {
 
             System.out.println("\nTEST ASSIGN CHEF");
             ArrayList<Chef> availableChef = CatERing.getInstance().getEventManager().getChefs();
-            CatERing.getInstance().getEventManager().assignChef(availableChef.get(0));
+            CatERing.getInstance().getEventManager().assignChef(availableChef.get(0), true);
 
             System.out.println(availableChef);
             System.out.println("assigned chef: " + ev.getChef());
@@ -138,6 +138,7 @@ public class TestEvent {
             CatERing.getInstance().getEventManager().approveMenu(ev.getServices().get(0));
 
             System.out.println("\nTEST CHECK SHIFTS");
+            System.out.println("ev id: " + ev.getId());
             ArrayList<Shift> shiftsList = CatERing.getInstance().getEventManager().getEventShifts(ev);
 
             System.out.println(shiftsList);

@@ -83,7 +83,7 @@ public class Shift {
     } */
 
     public String toString(){
-        String result = "---> SHIFT (for service: " + serv.getServiceType() + "):" + "\n";
+        String result = "---> SHIFT (id:"+ id + ") (for service: " + serv.getServiceType() + "):" + "\n";
         result += "time: " + this.startTime + " - " + this.endTime + "\n";
         /*result += "available staff members: " + "\n";
         for(int i = 0; i < availableStaffMems.size(); i++){

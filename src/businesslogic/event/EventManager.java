@@ -103,10 +103,26 @@ public class EventManager {
 
         return assignment;
     }
-
-    public void assignChef(Chef chef) throws UseCaseLogicException{
+/*
+    public void assignChef(Chef chef, boolean spread) throws UseCaseLogicException{
         if(currentEvent == null){
             throw new UseCaseLogicException();
+        }
+
+        currentEvent.setChef(chef);
+        this.notifyChefAssigned(currentEvent, chef);
+    }
+*/
+    public void assignChef(Chef chef, boolean spread) throws UseCaseLogicException{
+        if(currentEvent == null){
+            throw new UseCaseLogicException();
+        }
+
+        if(spread){
+            for(Event recEvent: currentEvent.getRecurrence().getRecurrentEvents()){
+                recEvent.setChef(chef);
+                this.notifyChefAssigned(recEvent, chef);
+            }
         }
 
         currentEvent.setChef(chef);
