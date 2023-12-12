@@ -10,6 +10,7 @@ import businesslogic.user.User;
 import javafx.collections.ObservableList;
 import persistence.EventPersistence;
 
+import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -269,6 +270,10 @@ public class EventManager {
 
             this.notifyEventStateChanged(currentEvent);
         }
+    }
+
+    public ArrayList<Shift> getEventShifts(Event ev){
+        return Event.loadAllEventShifts(ev);
     }
 
 /*

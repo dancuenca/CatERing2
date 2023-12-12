@@ -137,7 +137,10 @@ public class TestEvent {
             CatERing.getInstance().getMenuManager().publish();
             CatERing.getInstance().getEventManager().approveMenu(ev.getServices().get(0));
 
+            System.out.println("\nTEST CHECK SHIFTS");
+            ArrayList<Shift> shiftsList = CatERing.getInstance().getEventManager().getEventShifts(ev);
 
+            System.out.println(shiftsList);
 
         } catch (UseCaseLogicException ex) {
             System.out.println("Errore di logica nello use case");

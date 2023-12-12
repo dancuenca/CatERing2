@@ -8,9 +8,7 @@ import persistence.BatchUpdateHandler;
 import persistence.PersistenceManager;
 import persistence.ResultHandler;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -349,6 +347,30 @@ public class Event {
         return all;
     }
 
+    public static ArrayList<Shift> loadAllEventShifts(Event ev){
+        ArrayList<Shift> all = new ArrayList<>();
+
+        for(Service serv: ev.getServices()){
+            String query = "SELECT * FROM catering.shiftscatering WHERE service_id = " + serv.getId();
+            PersistenceManager.executeQuery(query, new ResultHandler() {
+                @Override
+                public void handle(ResultSet rs) throws SQLException {
+                    Shift shift = new Shift();
+                    shift.setId(rs.getInt("id"));
+                    shift.setService(Service.loadServiceById(rs.getInt("service_id")));
+                    Time startTimeTmp = rs.getTime("start_time");
+                    shift.setStartTime(startTimeTmp.toLocalTime());
+                    Time endTimeTmp = rs.getTime("end_time");
+                    shift.setEndTime(endTimeTmp.toLocalTime());
+
+                    all.add(shift);
+                }
+            });
+        }
+
+        return all;
+    }
+
     public static void saveEventTitle(Event ev) {
         String titleUpdate = "UPDATE catering.eventscatering SET title = '" + PersistenceManager.escapeString(ev.title) + "' " + "WHERE id = " + ev.id;
         PersistenceManager.executeUpdate(titleUpdate);
@@ -382,6 +404,29 @@ public class Event {
     public static void saveNewEventState(Event ev){
         String stateUpdate = "UPDATE catering.eventscatering SET state = '" + ev.getState() + "' WHERE id = " + ev.id;
         PersistenceManager.executeUpdate(stateUpdate);
+    }
+
+    public static Event loadEventById(int eid){
+        Event load = new Event();
+        String eventQuery = "SELECT * FROM catering.eventscatering WHERE id = " + eid;
+        PersistenceManager.executeQuery(eventQuery, new ResultHandler() {
+            @Override
+            public void handle(ResultSet rs) throws SQLException {
+                load.id = rs.getInt("id");
+                load.title = rs.getString("title");
+                load.startDate = rs.getDate("start_date");
+                load.endDate = rs.getDate("end_date");
+                load.location = rs.getString("location");
+                load.numParticipants = rs.getInt("num_participants");
+                load.recurrence = Recurrence.loadRecurrenceById(rs.getInt("recurrence_id"));
+                load.client = rs.getString("client");
+                load.organizer = User.loadUserById(rs.getInt("organizer_id"));
+                load.chef = Chef.loadChefById(rs.getInt("chef_id"));
+                load.state = rs.getString("state");
+            }
+        });
+
+        return load;
     }
 
 }

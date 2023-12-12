@@ -516,6 +516,25 @@ public class Menu {
         return result;
     }
 
+    public static Menu loadMenuById(int mid){
+        String query = "SELECT * FROM catering.menus WHERE id = " + mid;
+        Menu m = new Menu();
+
+        PersistenceManager.executeQuery(query, new ResultHandler() {
+            @Override
+            public void handle(ResultSet rs) throws SQLException {
+                m.id = rs.getInt("id");
+                m.title = rs.getString("title");
+                m.owner = User.loadUserById(rs.getInt("owner_id"));
+                m.ownerId = rs.getInt("owner_id");
+                m.published = rs.getBoolean("published");
+
+            }
+        });
+
+        return m;
+    }
+
     public static void saveSectionOrder(Menu m) {
         String upd = "UPDATE MenuSections SET position = ? WHERE id = ?";
         PersistenceManager.executeBatchUpdate(upd, m.sections.size(), new BatchUpdateHandler() {

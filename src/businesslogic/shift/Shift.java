@@ -26,8 +26,16 @@ public class Shift {
         this.availableStaffMems = new ArrayList<>();
     }
 
+    public Shift(){
+
+    }
+
     public int getId(){
         return id;
+    }
+
+    public void setId(int id){
+        this.id = id;
     }
 
     public void setStartTime(LocalTime startTime) {
@@ -40,6 +48,10 @@ public class Shift {
 
     public ArrayList<StaffMember> getAvailableStaffMems() {
         return availableStaffMems;
+    }
+
+    public void setService(Service serv){
+        this.serv = serv;
     }
 
     /*public ArrayList<StaffMember> getAvailableStaffMems() {
@@ -103,10 +115,6 @@ public class Shift {
                 }
             }
         });
-
-        //PersistenceManager.executeUpdate(shiftInsert);
-        //shift.id = PersistenceManager.getLastId();
-        System.out.println("//////////////////////" + shift.id);
     }
 
     /*public static void saveAllNewShifts(Service serv, ArrayList<Shift> shifts){

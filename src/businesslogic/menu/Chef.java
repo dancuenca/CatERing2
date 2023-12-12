@@ -93,4 +93,20 @@ public class Chef {
                 "WHERE id = " + chef.id;
         PersistenceManager.executeUpdate(chefEventUpdate);
     }
+
+    public static Chef loadChefById(int cid){
+        Chef load = new Chef();
+        String chefQuery = "SELECT * FROM catering.chefscatering WHERE id = " + cid;
+        PersistenceManager.executeQuery(chefQuery, new ResultHandler() {
+            @Override
+            public void handle(ResultSet rs) throws SQLException {
+                load.id = rs.getInt("id");
+                load.name = rs.getString("name");
+                load.available = rs.getInt("availability");
+                load.eventId = rs.getInt("event_id");
+            }
+        });
+
+        return load;
+    }
 }

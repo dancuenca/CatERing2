@@ -2,6 +2,7 @@ package businesslogic.event;
 
 import persistence.BatchUpdateHandler;
 import persistence.PersistenceManager;
+import persistence.ResultHandler;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -33,6 +34,8 @@ public class Recurrence {
 
         populateRecEventsList(mainEvent);
     }
+
+    public Recurrence(){}
 
     private static Date convertStringToDate(String dateString){
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
@@ -132,5 +135,23 @@ public class Recurrence {
                 Event.saveAllNewRecurrentEvents(rec, rec.recurrentEvents);
             }
         }
+    }
+
+    public static Recurrence loadRecurrenceById(int rid){
+        Recurrence load = new Recurrence();
+        String recurrenceQuery = "SELECT * FROM catering.recurrencecatering WHERE id = " + rid;
+        PersistenceManager.executeQuery(recurrenceQuery, new ResultHandler() {
+            @Override
+            public void handle(ResultSet rs) throws SQLException {
+                load.id = rs.getInt("id");
+                load.numInstances = rs.getInt("num_instances");
+                load.frequence = rs.getInt("frequence");
+                load.startDate = rs.getDate("start_date");
+                load.endDate = rs.getDate("end_date");
+                load.mainEvent = Event.loadEventById(rs.getInt("main_event_id"));
+            }
+        });
+
+        return load;
     }
 }

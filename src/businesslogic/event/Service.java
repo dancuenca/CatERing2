@@ -5,6 +5,7 @@ import businesslogic.menu.Menu;
 import businesslogic.shift.Shift;
 import persistence.BatchUpdateHandler;
 import persistence.PersistenceManager;
+import persistence.ResultHandler;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -37,6 +38,8 @@ public class Service {
 
         //shifts = generateShifts(this, startTime, endTime, numShifts);
     }
+
+    public Service(){}
 
     private static LocalTime convertStringInLocalTime(String timeString){
         return LocalTime.parse(timeString);
@@ -142,4 +145,28 @@ public class Service {
         String menuApprovedUpdate = "UPDATE catering.servicescatering SET approved = 1 WHERE id = " + serv.getId();
         PersistenceManager.executeUpdate(menuApprovedUpdate);
     }
+
+    public static Service loadServiceById(int sid){
+        Service load = new Service();
+
+        String serviceQuery = "SELECT * FROM catering.servicescatering WHERE id = " + sid;
+        PersistenceManager.executeQuery(serviceQuery, new ResultHandler() {
+            @Override
+            public void handle(ResultSet rs) throws SQLException {
+                load.id = rs.getInt("id");
+                load.ev = Event.loadEventById(rs.getInt("event_id"));
+                load.serviceType = rs.getString("service_type");
+                Time startTimeTmp = rs.getTime("start_time");
+                load.startTime = startTimeTmp.toLocalTime();
+                Time endTimeTmp = rs.getTime("end_time");
+                load.endTime = endTimeTmp.toLocalTime();
+                load.menu = Menu.loadMenuById(rs.getInt("menu_id"));
+                load.approvedMenu = rs.getBoolean("approved");
+                load.date = rs.getDate("date");
+            }
+        });
+
+        return load;
+    }
+
 }
