@@ -28,6 +28,7 @@ public class Event {
     private Chef chef;
 
     private ArrayList<Service> services;
+    private ArrayList<Shift> shifts;
 
     private User organizer;
 
@@ -48,7 +49,7 @@ public class Event {
         this.client = client;
 
         this.services = new ArrayList<>();
-
+        this.shifts = new ArrayList<>();
     }
 
     public Event(User user, String title, String location, Date startDate, Date endDate, int numParticipants, String client, ArrayList<String> notes){
@@ -154,6 +155,10 @@ public class Event {
         return chef;
     }
 
+    public ArrayList<Shift> getShifts(){
+        return shifts;
+    }
+
     public void setRecurrence(Recurrence recurrence) {
         this.recurrence = recurrence;
     }
@@ -178,8 +183,8 @@ public class Event {
         this.numParticipants = numParticipants;
     }
 
-    public void setNotes(ArrayList<String> notes) {
-        this.notes = notes;
+    public void setShifts(ArrayList<Shift> shifts){
+        this.shifts = shifts;
     }
 
     public void addNote(String note){

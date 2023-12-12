@@ -30,10 +30,14 @@ public class ShiftManager {
             shifts.add(shift);
             shiftStartTime = shiftEndTime;
         }
+
         if(shiftEndTime.isBefore(endTime)){
             Shift lastShift = shifts.get(numShifts-1);
             lastShift.setEndTime(endTime);
         }
+
+        serv.getBelongingEvent().setShifts(shifts);
+
         return shifts;
     }
 

@@ -273,7 +273,7 @@ public class EventManager {
     }
 
     public ArrayList<Shift> getEventShifts(Event ev){
-        return Event.loadAllEventShifts(ev);
+        return ev.getShifts();
     }
 
 /*
