@@ -290,6 +290,39 @@ public class Event {
         PersistenceManager.executeUpdate(delEv);
     }
 
+    public static void cancelEvent(Event ev, boolean spread){
+        if(spread && ev.getRecurrence() != null){
+            for(Event recEv: ev.getRecurrence().getRecurrentEvents()){
+                cancelSingleEvent(recEv);
+            }
+        }
+
+        cancelSingleEvent(ev);
+    }
+
+    private static void cancelSingleEvent(Event ev){
+        for(Service serv: ev.getServices()){
+            for(Shift shift: serv.getShifts()){
+                for(StaffMember sm: shift.getAvailableStaffMems()){
+                    //change staff member availability
+                    System.out.println("change availability shift id: " + shift.getId());
+                    String changeAvailStaff = "UPDATE catering.staffmembercatering SET availability = 1 WHERE shift_id = " + shift.getId();
+                    PersistenceManager.executeUpdate(changeAvailStaff);
+                    String resetShiftId = "UPDATE catering.staffmembercatering SET shift_id = 0 WHERE shift_id = " + shift.getId();
+                    PersistenceManager.executeUpdate((resetShiftId));
+                }
+
+                System.out.println("prima di del dei task shift id: " + shift.getId());
+                //delete task
+                String delAssignment = "DELETE FROM catering.tasksassignment WHERE shift_id = " + shift.getId();
+                PersistenceManager.executeUpdate(delAssignment);
+            }
+        }
+
+        String cancelUpdate = "UPDATE catering.eventscatering SET state = 'cancelled' WHERE id = " + ev.id;
+        PersistenceManager.executeUpdate(cancelUpdate);
+    }
+
     public static void notesToDB(Event ev) {
         String featureInsert = "INSERT INTO catering.NotesCatering (event_id, note) VALUES (?, ?)";
         PersistenceManager.executeBatchUpdate(featureInsert, ev.getNotes().size(), new BatchUpdateHandler() {
@@ -409,11 +442,6 @@ public class Event {
     public static void saveNewEventState(Event ev){
         String stateUpdate = "UPDATE catering.eventscatering SET state = '" + ev.getState() + "' WHERE id = " + ev.id;
         PersistenceManager.executeUpdate(stateUpdate);
-    }
-
-    public static void saveEventCancelled(Event ev){
-        String cancelUpdate = "UPDATE catering.eventscatering SET state = 'cancelled' WHERE id = " + ev.id;
-        PersistenceManager.executeUpdate(cancelUpdate);
     }
 
     public static Event loadEventById(int eid){

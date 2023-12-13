@@ -80,7 +80,7 @@ public class EventPersistence implements EventEventReceiver {
     }
 
     @Override
-    public void updateEventCancelled(Event ev){
-        Event.saveEventCancelled(ev);
+    public void updateEventCancelled(Event ev, boolean spread){
+        Event.cancelEvent(ev, spread);
     }
 }

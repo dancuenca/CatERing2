@@ -128,11 +128,17 @@ public class EventManager {
         currentEvent.setChef(chef);
         this.notifyChefAssigned(currentEvent, chef);
     }
-//TODO: aggiungere gestione di evento ricorrente per spread = true
+
     public Event deleteEvent(Event ev, boolean spread) throws UseCaseLogicException{
         User u = CatERing.getInstance().getUserManager().getCurrentUser();
         if (!u.isOrganizer() || ev.getState().equals("ongoing")){
             throw new UseCaseLogicException();
+        }
+
+        if(spread){
+            for(Event recEvent: currentEvent.getRecurrence().getRecurrentEvents()){
+                this.notifyEventDeleted(recEvent, spread);
+            }
         }
 
         this.notifyEventDeleted(ev, spread);
@@ -140,11 +146,20 @@ public class EventManager {
         return ev;
     }
 
-    //TODO: aggiungere gestione di evento ricorrente per spread = true
     public Event cancelEvent(Event ev, boolean spread) throws UseCaseLogicException{
         User u = CatERing.getInstance().getUserManager().getCurrentUser();
         if(!u.isOrganizer() || ev.getState().equals("ongoing")){
             throw new UseCaseLogicException();
+        }
+
+        if(spread){
+            for(Event recEvent: currentEvent.getRecurrence().getRecurrentEvents()){
+                recEvent.setState("cancelled");
+                this.notifyEventCancelled(recEvent, spread);
+            }
+
+            currentEvent.setState("cancelled");
+            this.notifyEventCancelled(currentEvent, spread);
         }
 
         ev.setState("cancelled");
@@ -450,7 +465,7 @@ public class EventManager {
 
     private void notifyEventCancelled(Event ev, boolean spread){
         for(EventEventReceiver er: this.eventReceivers){
-            er.updateEventCancelled(ev);
+            er.updateEventCancelled(ev, spread);
         }
     }
 

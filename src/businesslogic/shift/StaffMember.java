@@ -67,11 +67,11 @@ public class StaffMember {
         return staff;
     }
 
-    public static void changeAvailability(StaffMember staffMember) {
+    public static void changeAvailability(StaffMember staffMember, int shiftId) {
         staffMember.available = 0;
         String upd = "UPDATE StaffMemberCatering SET availability = " + staffMember.available + "  WHERE id = " + staffMember.id;
         PersistenceManager.executeUpdate(upd);
-        String upd2 = "UPDATE StaffMemberCatering SET shift_id = " + staffMember.shiftId + "  WHERE id = " + staffMember.id;
+        String upd2 = "UPDATE StaffMemberCatering SET shift_id = " + shiftId + "  WHERE id = " + staffMember.id;
         PersistenceManager.executeUpdate(upd2);
     }
 }

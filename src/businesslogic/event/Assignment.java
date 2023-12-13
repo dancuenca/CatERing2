@@ -58,6 +58,6 @@ public class Assignment {
         PersistenceManager.executeUpdate(assignmentInsert);
         assignment.id = PersistenceManager.getLastId();
 
-        StaffMember.changeAvailability(assignment.staffMember);
+        StaffMember.changeAvailability(assignment.staffMember, assignment.shift.getId());
     }
 }
