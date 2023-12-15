@@ -84,6 +84,26 @@ public class EventManager {
         return rec;
     }
 
+    public void changeRecurrenceFrequence(Recurrence rec, int newFrequence) throws UseCaseLogicException{
+        User user = CatERing.getInstance().getUserManager().getCurrentUser();
+
+        if(!user.isOrganizer()){
+            throw new UseCaseLogicException();
+        }
+
+        rec.setFrequence(newFrequence);
+
+        for(int i = 1; i <= rec.getNumInstances(); i++){
+            Event recEv = rec.getRecurrentEvents().get(i-1);
+            recEv.setStartDate(changeDateByAddDays(rec.getMainEvent().getStartDate(), rec.getFrequence() * i));
+            this.notifyEventStartDateChanged(recEv);
+            recEv.setEndDate(changeDateByAddDays(rec.getMainEvent().getEndDate(), rec.getFrequence() * i));
+            this.notifyEventEndDateChanged(recEv);
+        }
+
+        this.notifyRecurrenceFrequenceChanged(rec);
+    }
+
     public ArrayList<StaffMember> getStaffMembers() {
         return StaffMember.loadAvailableStaffMembers();
     }
@@ -103,16 +123,7 @@ public class EventManager {
 
         return assignment;
     }
-/*
-    public void assignChef(Chef chef, boolean spread) throws UseCaseLogicException{
-        if(currentEvent == null){
-            throw new UseCaseLogicException();
-        }
 
-        currentEvent.setChef(chef);
-        this.notifyChefAssigned(currentEvent, chef);
-    }
-*/
     public void assignChef(Chef chef, boolean spread) throws UseCaseLogicException{
         if(currentEvent == null){
             throw new UseCaseLogicException();
@@ -320,51 +331,6 @@ public class EventManager {
         return ev.getShifts();
     }
 
-/*
-    public Event cancelEvent(Event event, boolean spread) throws UseCaseLogicException{
-        User user = CatERing.getInstance().getUserManager().getCurrentUser();
-
-        if(!user.isOrganizer()){
-            throw new UseCaseLogicException();
-        }
-
-        if(spread == true){
-            for(int i = 0; i < event.getRecurrence().getRecurrentEvents().size(); i++){
-                event.getRecurrence().getRecurrentEvents().get(i).setState("cancelled");
-            }
-        }
-        else{
-            event.setState("cancelled");
-            event.getRecurrence().getRecurrentEvents().remove(event);
-        }
-
-        this.notifyEventCancelled(event);
-
-        return event;
-    }
-
-    public void approveMenu(Service serv) throws UseCaseLogicException{
-        User user = CatERing.getInstance().getUserManager().getCurrentUser();
-
-        if(!user.isOrganizer()){
-            throw new UseCaseLogicException();
-        }
-
-        serv.approveMenu();
-
-        boolean flag = true;
-        for(Service service : serv.getBelongingEvent().getServices()){
-            if(!service.isApprovedMenu()){
-                flag = false;
-            }
-        }
-
-        if(flag == true){
-            serv.getBelongingEvent().setState("ongoing");
-        }
-    }
-*/
-
     public void setCurrentEvent(Event ev){
         this.currentEvent = ev;
     }
@@ -384,6 +350,12 @@ public class EventManager {
     private void notifyRecurrenceAdded(Recurrence rec) {
         for(EventEventReceiver er: this.eventReceivers){
             er.updateRecurrenceCreated(rec);
+        }
+    }
+
+    private void notifyRecurrenceFrequenceChanged(Recurrence rec) {
+        for(EventEventReceiver er: this.eventReceivers ){
+            er.updateRecurrenceFrequenceChanged(rec);
         }
     }
 

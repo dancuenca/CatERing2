@@ -444,6 +444,13 @@ public class Event {
         PersistenceManager.executeUpdate(stateUpdate);
     }
 
+    public static void saveEventNewStartDate(Event ev){
+        String startDateUpdate = "UPDATE catering.eventscatering SET start_date = " + ev.startDate + " WHERE id = " + ev.id;
+        PersistenceManager.executeUpdate(startDateUpdate);
+        String endDateUpdate = "UPDATE catering.eventscatering SET end_date = " + ev.endDate + " WHERE id = " + ev.id;
+        PersistenceManager.executeUpdate(endDateUpdate);
+    }
+
     public static Event loadEventById(int eid){
         Event load = new Event();
         String eventQuery = "SELECT * FROM catering.eventscatering WHERE id = " + eid;

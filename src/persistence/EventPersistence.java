@@ -83,4 +83,9 @@ public class EventPersistence implements EventEventReceiver {
     public void updateEventCancelled(Event ev, boolean spread){
         Event.cancelEvent(ev, spread);
     }
+
+    @Override
+    public void updateRecurrenceFrequenceChanged(Recurrence rec){
+        Recurrence.changeFrequence(rec);
+    }
 }

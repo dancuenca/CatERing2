@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class TestEvent1a {
     public static void main(String args[]){
-         /*   try{
+            try{
             System.out.println("TEST CANCEL EVENT (spread = false)");
             CatERing.getInstance().getUserManager().fakeLogin("Lidia");
             System.out.println(CatERing.getInstance().getUserManager().getCurrentUser());
@@ -31,7 +31,7 @@ public class TestEvent1a {
         } catch(UseCaseLogicException ex){
             System.out.println("Errore di logica nello use case (cancelEvent)");
         }
-        */
+
         try{
             System.out.println("TEST CANCEL EVENT (spread = true)");
             CatERing.getInstance().getUserManager().fakeLogin("Lidia");
@@ -54,8 +54,7 @@ public class TestEvent1a {
             ArrayList<StaffMember> availableStaffMembers = CatERing.getInstance().getEventManager().getStaffMembers();
             CatERing.getInstance().getEventManager().defineAssignment(serv, availableStaffMembers.get(0), shifts.get(2), "task da rimuovere");
 
-            System.out.println("breakpoint");
-           CatERing.getInstance().getEventManager().cancelEvent(rec.getRecurrentEvents().get(1), true);
+            CatERing.getInstance().getEventManager().cancelEvent(rec.getRecurrentEvents().get(1), true);
         } catch (UseCaseLogicException ex){
             System.out.println("Errore di logica nello use case (cancelEvent)");
         }

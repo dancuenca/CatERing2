@@ -20,6 +20,7 @@ public interface EventEventReceiver {
     public void updateMenuForServiceApproved(Service serv);
     public void updateEventStateChanged(Event ev);
     public void updateEventCancelled(Event ev, boolean spread);
+    public void updateRecurrenceFrequenceChanged(Recurrence rec);
 
     /*
     public void updateEventCancelled(Event ev);

@@ -50,7 +50,6 @@ public class Recurrence {
     }
 
     //TODO: crea metodo per trovare numIstances da endDate
-
     private void populateRecEventsList(Event mainEvent){
         for(int i = 1; i <= this.numInstances; i++){
 
@@ -82,8 +81,8 @@ public class Recurrence {
         return recurrentEvents;
     }
 
-    public void setRecurrentEvents(ArrayList<Event> recurrentEvents) {
-        this.recurrentEvents = recurrentEvents;
+    public void setFrequence(int frequence){
+        this.frequence = frequence;
     }
 
     public int getId(){
@@ -92,6 +91,22 @@ public class Recurrence {
 
     public Event getMainEvent(){
         return mainEvent;
+    }
+
+    public int getNumInstances(){
+        return numInstances;
+    }
+
+    public int getFrequence(){
+        return frequence;
+    }
+
+    public void setStartDate(Date startDate){
+        this.startDate = startDate;
+    }
+
+    public void setEndDate(Date endDate){
+        this.endDate = endDate;
     }
 
     public String toString(){
@@ -153,5 +168,10 @@ public class Recurrence {
         });
 
         return load;
+    }
+
+    public static void changeFrequence(Recurrence rec){
+        String frequenceUpdate = "UPDATE catering.recurrencecatering SET frequence = " + rec.frequence;
+        PersistenceManager.executeUpdate(frequenceUpdate);
     }
 }
