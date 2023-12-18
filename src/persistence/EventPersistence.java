@@ -21,6 +21,11 @@ public class EventPersistence implements EventEventReceiver {
     }
 
     @Override
+    public void updateServiceDeleted(Event ev, Service serv){
+        Service.saveServiceDeleted(ev, serv);
+    }
+
+    @Override
     public void updateRecurrenceCreated(Recurrence rec){
         Recurrence.saveNewRecurrence(rec);
     }

@@ -65,8 +65,22 @@ public class EventManager {
                 this.notifyServiceAdded(event, service);
             }
         }
-        return service;
 
+        return service;
+    }
+
+    public Service deleteService(Event ev, Service serv, boolean spread) throws UseCaseLogicException{
+        if(currentEvent == null || ev.getState() == "ongoing"){
+            throw new UseCaseLogicException();
+        }
+
+        ev.getServices().remove(serv);
+
+        this.notifyServiceDeleted(ev, serv);
+
+        //TODO: implementare spread
+
+        return serv;
     }
 
     public Recurrence defineRecurrence(int frequence, int numIstances, String endDate, Event mainEvent) throws UseCaseLogicException {
@@ -350,8 +364,6 @@ public class EventManager {
 
         boolean flag = true;
         for(Service service: serv.getBelongingEvent().getServices()){
-            System.out.println("--------------------------> numero serv di ev: " + serv.getBelongingEvent().getServices().size());
-            System.out.println("--------------------------> menu approvato??? " + service.isApprovedMenu());
             if(!service.isApprovedMenu()){
                 flag = false;
             }
@@ -428,6 +440,12 @@ public class EventManager {
     private void notifyServiceAdded(Event ev, Service serv) {
         for(EventEventReceiver er: this.eventReceivers){
             er.updateServiceAdded(ev, serv);
+        }
+    }
+
+    private void notifyServiceDeleted(Event ev, Service serv){
+        for(EventEventReceiver er: this.eventReceivers){
+            er.updateServiceDeleted(ev, serv);
         }
     }
 

@@ -136,6 +136,12 @@ public class Service {
         });
     }
 
+    public static void saveServiceDeleted(Event ev, Service serv){
+        String serviceDeleted = "DELETE FROM catering.servicescatering WHERE event_id = " + ev.getId()
+                + " AND id = " + serv.id;
+        PersistenceManager.executeUpdate((serviceDeleted));
+    }
+
     public static void saveMenuSet(Service serv, Menu m){
         String serviceMenuUpdate = "UPDATE catering.servicescatering SET menu_id = '" + m.getId() + "' WHERE id = " + serv.getId();
         PersistenceManager.executeUpdate(serviceMenuUpdate);

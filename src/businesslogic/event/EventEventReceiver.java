@@ -6,6 +6,7 @@ import businesslogic.menu.Menu;
 public interface EventEventReceiver {
     public void updateEventCreated(Event ev);
     public void updateServiceAdded(Event ev, Service serv);
+    public void updateServiceDeleted(Event ev, Service serv);
     public void updateRecurrenceCreated(Recurrence rec);
     public void updateAssignmentAdded(Assignment assignment);
     public void updateEventDeleted(Event ev, boolean spread);
