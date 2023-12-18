@@ -100,6 +100,11 @@ public class EventPersistence implements EventEventReceiver {
     }
 
     @Override
+    public void updateRecurrentEventDeleted(Recurrence rec, int numInstances) {
+        Recurrence.changeNumInstances(rec);
+    }
+
+    @Override
     public void updateRecurrenceSetEvent(Recurrence rec, Event ev){
         Event.saveRecurrenceSetEvent(rec, ev);
     }

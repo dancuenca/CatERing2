@@ -24,7 +24,7 @@ public class TestEvent2b {
 
             System.out.println(rec.getRecurrentEvents());
 
-            CatERing.getInstance().getEventManager().changeRecurrenceNumInstances(rec, 5);
+            CatERing.getInstance().getEventManager().changeRecurrenceNumInstances(rec, 1);
         } catch (UseCaseLogicException ex){
             System.out.println("Errore di logica nello use case (changeRecurrenceNumInstances)");
         }

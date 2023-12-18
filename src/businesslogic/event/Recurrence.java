@@ -183,5 +183,4 @@ public class Recurrence {
         String numInstancesUpdate = "UPDATE catering.recurrencecatering SET num_instances = " + rec.numInstances;
         PersistenceManager.executeUpdate(numInstancesUpdate);
     }
-
 }

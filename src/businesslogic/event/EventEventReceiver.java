@@ -23,6 +23,7 @@ public interface EventEventReceiver {
     public void updateRecurrenceFrequenceChanged(Recurrence rec);
     public void updateRecurrenceNumInstancesChanged(Recurrence rec);
     public void updateRecurrentEventAdded(Event ev);
+    public void updateRecurrentEventDeleted(Recurrence rec, int numInstances);
     public void updateRecurrenceSetEvent(Recurrence rec, Event ev);
 
     /*

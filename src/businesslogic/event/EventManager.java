@@ -111,7 +111,7 @@ public class EventManager {
             throw new UseCaseLogicException();
         }
 
-        int numNewInstances = numInstances - rec.getNumInstances();
+        int numNewInstances = Math.abs(numInstances - rec.getNumInstances());
         int indexLastRecEvent = rec.getRecurrentEvents().size()-1;
 
         if(numInstances > rec.getNumInstances()){
@@ -129,9 +129,11 @@ public class EventManager {
             }
         }
         else if(numInstances < rec.getNumInstances()){
-            while(numNewInstances > 0){
+            while(numNewInstances > 0 && rec.getRecurrentEvents().get(numNewInstances).getState() != "ongoing"){
                 deleteEvent(rec.getRecurrentEvents().get(numNewInstances), false);
                 numNewInstances--;
+
+                this.notifyRecurrentEventDeleted(rec, numNewInstances);
             }
         }
 
@@ -398,6 +400,12 @@ public class EventManager {
     private void notifyRecurrentEventAdded(Event recEv){
         for(EventEventReceiver er: this.eventReceivers){
             er.updateRecurrentEventAdded(recEv);
+        }
+    }
+
+    private void notifyRecurrentEventDeleted(Recurrence rec, int numNewInstances){
+        for(EventEventReceiver er: this.eventReceivers){
+            er.updateRecurrentEventDeleted(rec, numNewInstances);
         }
     }
 
