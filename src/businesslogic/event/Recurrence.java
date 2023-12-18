@@ -85,6 +85,10 @@ public class Recurrence {
         this.frequence = frequence;
     }
 
+    public void setNumInstances(int numInstances){
+        this.numInstances = numInstances;
+    }
+
     public int getId(){
         return id;
     }
@@ -174,4 +178,10 @@ public class Recurrence {
         String frequenceUpdate = "UPDATE catering.recurrencecatering SET frequence = " + rec.frequence;
         PersistenceManager.executeUpdate(frequenceUpdate);
     }
+
+    public static void changeNumInstances(Recurrence rec){
+        String numInstancesUpdate = "UPDATE catering.recurrencecatering SET num_instances = " + rec.numInstances;
+        PersistenceManager.executeUpdate(numInstancesUpdate);
+    }
+
 }

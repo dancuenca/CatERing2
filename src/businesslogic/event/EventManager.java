@@ -104,6 +104,42 @@ public class EventManager {
         this.notifyRecurrenceFrequenceChanged(rec);
     }
 
+    public void changeRecurrenceNumInstances(Recurrence rec, int numInstances) throws UseCaseLogicException{
+        User user = CatERing.getInstance().getUserManager().getCurrentUser();
+
+        if(!user.isOrganizer()){
+            throw new UseCaseLogicException();
+        }
+
+        int numNewInstances = numInstances - rec.getNumInstances();
+        int indexLastRecEvent = rec.getRecurrentEvents().size()-1;
+
+        if(numInstances > rec.getNumInstances()){
+            for(int i = 1; i <= numNewInstances; i++){
+                Event recEv = new Event(rec.getMainEvent().getOrganizer(), rec.getMainEvent().getTitle(), rec.getMainEvent().getLocation(),
+                        Recurrence.changeDateByAddDays(rec.getRecurrentEvents().get(indexLastRecEvent).getStartDate(), rec.getFrequence() * i),
+                        Recurrence.changeDateByAddDays(rec.getRecurrentEvents().get(indexLastRecEvent).getEndDate(), rec.getFrequence() * i),
+                        rec.getMainEvent().getNumParticipants(), rec.getMainEvent().getClient(), rec.getMainEvent().getNotes());
+
+                rec.getRecurrentEvents().add(recEv);
+                recEv.setRecurrence(rec);
+                this.notifyRecurrenceSetEvent(rec, recEv);
+
+                this.notifyRecurrentEventAdded(recEv);
+            }
+        }
+        else if(numInstances < rec.getNumInstances()){
+            while(numNewInstances > 0){
+                deleteEvent(rec.getRecurrentEvents().get(numNewInstances), false);
+                numNewInstances--;
+            }
+        }
+
+        rec.setNumInstances(numInstances);
+
+        this.notifyRecurrenceNumInstancesChanged(rec);
+    }
+
     public ArrayList<StaffMember> getStaffMembers() {
         return StaffMember.loadAvailableStaffMembers();
     }
@@ -356,6 +392,24 @@ public class EventManager {
     private void notifyRecurrenceFrequenceChanged(Recurrence rec) {
         for(EventEventReceiver er: this.eventReceivers ){
             er.updateRecurrenceFrequenceChanged(rec);
+        }
+    }
+
+    private void notifyRecurrentEventAdded(Event recEv){
+        for(EventEventReceiver er: this.eventReceivers){
+            er.updateRecurrentEventAdded(recEv);
+        }
+    }
+
+    private void notifyRecurrenceSetEvent(Recurrence rec, Event ev){
+        for(EventEventReceiver er: this.eventReceivers){
+            er.updateRecurrenceSetEvent(rec, ev);
+        }
+    }
+
+    private void notifyRecurrenceNumInstancesChanged(Recurrence rec){
+        for(EventEventReceiver er: this.eventReceivers){
+            er.updateRecurrenceNumInstancesChanged(rec);
         }
     }
 

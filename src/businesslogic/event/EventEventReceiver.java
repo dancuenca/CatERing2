@@ -21,6 +21,9 @@ public interface EventEventReceiver {
     public void updateEventStateChanged(Event ev);
     public void updateEventCancelled(Event ev, boolean spread);
     public void updateRecurrenceFrequenceChanged(Recurrence rec);
+    public void updateRecurrenceNumInstancesChanged(Recurrence rec);
+    public void updateRecurrentEventAdded(Event ev);
+    public void updateRecurrenceSetEvent(Recurrence rec, Event ev);
 
     /*
     public void updateEventCancelled(Event ev);

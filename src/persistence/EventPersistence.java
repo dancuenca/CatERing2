@@ -88,4 +88,19 @@ public class EventPersistence implements EventEventReceiver {
     public void updateRecurrenceFrequenceChanged(Recurrence rec){
         Recurrence.changeFrequence(rec);
     }
+
+    @Override
+    public void updateRecurrenceNumInstancesChanged(Recurrence rec){
+        Recurrence.changeNumInstances(rec);
+    }
+
+    @Override
+    public void updateRecurrentEventAdded(Event ev){
+        Event.saveNewEvent(ev);
+    }
+
+    @Override
+    public void updateRecurrenceSetEvent(Recurrence rec, Event ev){
+        Event.saveRecurrenceSetEvent(rec, ev);
+    }
 }

@@ -444,11 +444,9 @@ public class Event {
         PersistenceManager.executeUpdate(stateUpdate);
     }
 
-    public static void saveEventNewStartDate(Event ev){
-        String startDateUpdate = "UPDATE catering.eventscatering SET start_date = " + ev.startDate + " WHERE id = " + ev.id;
-        PersistenceManager.executeUpdate(startDateUpdate);
-        String endDateUpdate = "UPDATE catering.eventscatering SET end_date = " + ev.endDate + " WHERE id = " + ev.id;
-        PersistenceManager.executeUpdate(endDateUpdate);
+    public static void saveRecurrenceSetEvent(Recurrence rec, Event ev){
+        String setRecurrenceEventUpdate = "UPDATE catering.eventscatering SET recurrence_id = ' " + rec.getId() + "' " + "WHERE id = " + ev.id;
+        PersistenceManager.executeUpdate(setRecurrenceEventUpdate);
     }
 
     public static Event loadEventById(int eid){
